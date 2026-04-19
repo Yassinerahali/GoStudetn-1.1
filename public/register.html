@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register | Ride Sharing</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <main class="container auth-page">
+    <div class="auth-card">
+      <h1>Create Account</h1>
+      <form id="registerForm" enctype="multipart/form-data">
+        <label>Full name</label>
+        <input type="text" id="registerName" required />
+        <label>Email</label>
+        <input type="email" id="registerEmail" required />
+        <label>Password</label>
+        <input type="password" id="registerPassword" required minlength="6" />
+        <label>Role</label>
+        <select id="registerRole" required>
+          <option value="student">Student</option>
+          <option value="driver">Driver</option>
+        </select>
+        <label>Gender</label>
+        <div>
+          <input type="radio" id="male" name="gender" value="male" required />
+          <label for="male">Man</label>
+          <input type="radio" id="female" name="gender" value="female" required />
+          <label for="female">Woman</label>
+        </div>
+        <label>Description</label>
+        <textarea id="registerDescription" required></textarea>
+        <label>Profile Picture</label>
+        <input type="file" id="registerProfilePic" accept="image/*" required />
+        <div id="scholarshipField">
+          <label>Scholarship Card (PDF)</label>
+          <input type="file" id="registerScholarshipCard" accept=".pdf" required />
+        </div>
+        <div id="studentFields">
+          <p class="small-text">Scholarship card is required for students.</p>
+        </div>
+        <div id="driverFields" style="display: none;">
+          <label>Driving Licence (PDF)</label>
+          <input type="file" id="registerDrivingLicence" accept=".pdf" />
+          <label>Car Licence and Related Documents (PDFs)</label>
+          <input type="file" id="registerCarDocuments" accept=".pdf" multiple />
+        </div>
+        <button type="submit" class="btn btn-primary">Register</button>
+        <p class="small-text">Already have an account? <a href="login.html">Login</a></p>
+      </form>
+      <div id="registerMessage" class="message"></div>
+    </div>
+  </main>
+  <script src="js/main.js"></script>
+  <script>
+    document.getElementById('registerRole').addEventListener('change', function() {
+      const role = this.value;
+      const studentFields = document.getElementById('studentFields');
+      const driverFields = document.getElementById('driverFields');
+      const scholarshipCard = document.getElementById('registerScholarshipCard');
+      const drivingLicence = document.getElementById('registerDrivingLicence');
+      const carDocuments = document.getElementById('registerCarDocuments');
+
+      if (role === 'student') {
+        studentFields.style.display = 'block';
+        driverFields.style.display = 'none';
+        scholarshipCard.required = true;
+        drivingLicence.required = false;
+        carDocuments.required = false;
+      } else if (role === 'driver') {
+        studentFields.style.display = 'none';
+        driverFields.style.display = 'block';
+        scholarshipCard.required = true;
+        drivingLicence.required = true;
+        carDocuments.required = true;
+      }
+    });
+  </script>
+</body>
+</html>

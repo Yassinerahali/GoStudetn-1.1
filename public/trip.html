@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book Trip | Ride Sharing</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <main class="container booking-page">
+    <section class="card">
+      <h1>Trip Details</h1>
+      <div id="tripDetails"></div>
+      <div id="tripMessage" class="message"></div>
+      <form id="bookingForm" class="booking-form">
+        <label>Seats to reserve</label>
+        <input type="number" id="bookingSeats" value="1" min="1" />
+        <label>Mode de paiement</label>
+        <div class="payment-options">
+          <label><input type="radio" name="paymentMethod" value="wallet" checked /> Payer depuis le portefeuille</label>
+          <label><input type="radio" name="paymentMethod" value="mastercard" /> Mastercard / Visa</label>
+          <label><input type="radio" name="paymentMethod" value="paypal" /> PayPal</label>
+        </div>
+        <p id="walletStatus" class="small-text"></p>
+        <button type="submit" class="btn btn-primary">Reserve Seat</button>
+      </form>
+      <div class="row gap">
+        <a href="index.html" class="btn btn-secondary">Back to Trips</a>
+        <a href="student-dashboard.html" class="btn btn-secondary">Student Dashboard</a>
+      </div>
+    </section>
+  </main>
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Go Student | Admin Dashboard</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="go-student-layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">GS</div>
+      <div>
+        <h1>Go Student</h1>
+        <p>Admin panel</p>
+      </div>
+    </div>
+    <nav class="side-nav">
+      <a href="index.html" class="nav-item">Accueil</a>
+      <a href="admin-dashboard.html" class="nav-item is-active">Admin Dashboard</a>
+      <a href="#" id="logoutNav" class="nav-item">Deconnexion</a>
+    </nav>
+    <div class="sidebar-user">
+      <div class="avatar-chip">AD</div>
+      <div>
+        <strong>Admin</strong>
+        <p>Go Student</p>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="main-header">
+      <div>
+        <h2>Admin Dashboard</h2>
+        <p id="adminInfo">Loading admin profile...</p>
+      </div>
+      <div class="header-actions admin-actions">
+        <a href="#adminWalletSection" class="btn btn-primary">Admin Wallet</a>
+        <a href="#documentsValidationSection" class="btn btn-secondary">Documents & Validation</a>
+        <a href="#usersTableSection" class="btn btn-secondary">Users Table</a>
+        <button id="logoutButton" class="btn btn-secondary">Logout</button>
+      </div>
+    </header>
+
+    <section id="tripsSituationSection" class="card wallet-history-card">
+      <h3>Trips Situation</h3>
+      <div class="card-grid">
+        <div class="card" id="adminWalletSection">
+          <h3>Admin Wallet</h3>
+          <p id="adminWallet">0 MAD</p>
+        </div>
+        <div class="card">
+          <h3>Students</h3>
+          <p id="adminStudentsCount">0</p>
+        </div>
+        <div class="card">
+          <h3>Drivers</h3>
+          <p id="adminDriversCount">0</p>
+        </div>
+        <div class="card">
+          <h3>Total Trips</h3>
+          <p id="adminTripsCount">0</p>
+        </div>
+        <div class="card">
+          <h3>Total Bookings</h3>
+          <p id="adminBookingsCount">0</p>
+        </div>
+        <div class="card">
+          <h3>Total Withdrawal Fees</h3>
+          <p id="adminFeesTotal">0 MAD</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="documentsValidationSection" class="card wallet-history-card">
+      <h3>Documents and Accounts Validation</h3>
+      <div id="adminPendingDocs" class="history-list">
+        <p class="small-text">Loading documents...</p>
+      </div>
+    </section>
+
+    <section id="usersTableSection" class="card wallet-history-card">
+      <h3>Users Table</h3>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Email</th>
+              <th>Password</th>
+              <th>Sexe</th>
+              <th>Role</th>
+              <th>Balance</th>
+              <th>Spent (Student)</th>
+              <th>Withdrawn (Driver)</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="adminUsersTableBody">
+            <tr><td colspan="11">Loading users...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div id="adminUsersMessage" class="message"></div>
+    </section>
+  </main>
+  <script src="js/main.js"></script>
+</body>
+</html>

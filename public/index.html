@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Go Student | Trajets</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="go-student-layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">GS</div>
+      <div>
+        <h1>Go Student</h1>
+        <p>Covoiturage etudiant</p>
+      </div>
+    </div>
+    <nav class="side-nav">
+      <a href="index.html" class="nav-item is-active">Accueil</a>
+      <a href="student-dashboard.html" class="nav-item">Mes trajets</a>
+      <a href="trip.html" class="nav-item">Reservations</a>
+      <a href="profile.html" class="nav-item">Profil</a>
+      <a href="wallet.html" class="nav-item">Portefeuille</a>
+      <a href="#" id="logoutNav" class="nav-item" style="display: none;">Deconnexion</a>
+      <a href="login.html" class="nav-item">Connexion</a>
+      <a href="register.html" class="nav-item">Inscription</a>
+    </nav>
+    <div class="sidebar-user">
+      <div class="avatar-chip">OB</div>
+      <div>
+        <strong>Etudiant</strong>
+        <p>Bienvenue</p>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="main-header">
+      <div>
+        <h2>Trajets disponibles</h2>
+        <p>Trouvez votre covoiturage ideal</p>
+      </div>
+      <div class="header-actions">
+        <button id="darkModeToggle" type="button" class="btn btn-secondary">Mode Sombre</button>
+        <a href="driver-dashboard.html" class="btn btn-primary publish-btn">+ Publier un trajet</a>
+      </div>
+    </header>
+
+    <section class="search-wrap">
+      <div class="search-row">
+        <input id="destinationFilter" type="text" placeholder="Rechercher un trajet..." />
+      </div>
+      <div class="filter-row">
+        <span class="safety-tag">+ DE SECURITE AVEC <strong>OPTION PINK</strong></span>
+        <label class="switch-wrap" for="pinkModeToggle">
+          <span>Filtre option pink</span>
+          <input id="pinkModeToggle" type="checkbox" />
+        </label>
+      </div>
+      <div class="extra-filters">
+        <input id="dateFilter" type="date" />
+        <input id="priceFilter" type="number" min="0" placeholder="Prix max (MAD)" />
+        <button id="filterButton" class="btn btn-secondary">Filtrer</button>
+      </div>
+    </section>
+
+    <section>
+      <div id="tripsList" class="trip-list"></div>
+    </section>
+  </main>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

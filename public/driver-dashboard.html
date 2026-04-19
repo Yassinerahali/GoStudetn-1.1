@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Driver Dashboard | Ride Sharing</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <main class="container dashboard-page">
+    <section class="card">
+      <div class="dashboard-header">
+        <h1>Driver Dashboard</h1>
+        <div class="header-actions">
+          <a href="index.html" class="btn btn-secondary">Home</a>
+          <button id="logoutButton" class="btn btn-secondary">Logout</button>
+        </div>
+      </div>
+      <div id="driverInfo" class="info-box"></div>
+      <h2>Create a New Trip</h2>
+      <form id="tripForm" class="dashboard-form">
+        <div class="row gap">
+          <input type="text" id="departureCity" placeholder="Departure city" required />
+          <input type="text" id="destinationCity" placeholder="Destination city" required />
+        </div>
+        <div class="row gap">
+          <input type="date" id="departureDate" required />
+          <input type="time" id="departureTime" required />
+        </div>
+        <div class="row gap">
+          <input type="number" id="tripPrice" placeholder="Price" min="0" required />
+          <input type="number" id="tripSeats" placeholder="Seats available" min="1" required />
+        </div>
+        <textarea id="tripDescription" rows="3" placeholder="Optional notes"></textarea>
+        <button type="submit" class="btn btn-primary">Publish Trip</button>
+      </form>
+      <div id="driverMessage" class="message"></div>
+      <h2>Wallet Driver</h2>
+      <p id="driverWalletBalance" class="profile-pill">Solde du portefeuille : 0 MAD</p>
+      <form id="withdrawForm" class="dashboard-form">
+        <div class="row gap">
+          <input type="number" id="withdrawAmount" placeholder="Montant a retirer (MAD)" min="1" step="1" required />
+          <select id="withdrawMethod" required>
+            <option value="wafacash">WafaCash</option>
+            <option value="westernunion">WesternUnion</option>
+            <option value="bankaccount">Bank Account</option>
+          </select>
+        </div>
+        <p class="small-text">Frais de retrait: 10% (vers portefeuille admin).</p>
+        <button type="submit" class="btn btn-primary">Retirer</button>
+      </form>
+      <div id="withdrawMessage" class="message"></div>
+      <h2>Your Trips</h2>
+      <div id="driverTrips" class="card-grid"></div>
+      <h2>Incoming Bookings</h2>
+      <div id="driverBookings" class="card-grid"></div>
+    </section>
+  </main>
+  <script src="js/main.js"></script>
+</body>
+</html>

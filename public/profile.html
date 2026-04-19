@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile | Go Student</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="go-student-layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">GS</div>
+      <div>
+        <h1>Go Student</h1>
+        <p>Covoiturage etudiant</p>
+      </div>
+    </div>
+    <nav class="side-nav">
+      <a href="index.html" class="nav-item">Accueil</a>
+      <a href="student-dashboard.html" class="nav-item">Mes trajets</a>
+      <a href="trip.html" class="nav-item">Reservations</a>
+      <a href="profile.html" class="nav-item is-active">Profil</a>
+      <a href="wallet.html" class="nav-item">Portefeuille</a>
+      <a href="#" id="logoutNav" class="nav-item" style="display: none;">Deconnexion</a>
+      <a href="login.html" class="nav-item">Connexion</a>
+      <a href="register.html" class="nav-item">Inscription</a>
+    </nav>
+    <div class="sidebar-user">
+      <div class="avatar-chip">OB</div>
+      <div>
+        <strong>Etudiant</strong>
+        <p>Bienvenue</p>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="main-header">
+      <div>
+        <h2>Profil Utilisateur</h2>
+        <p>Informations du profil</p>
+      </div>
+      <div class="header-actions">
+        <button id="darkModeToggle" type="button" class="btn btn-secondary">Mode Sombre</button>
+      </div>
+    </header>
+
+    <section>
+      <div id="profileMessage" class="message"></div>
+      <div id="profileDetails" class="card">
+        <!-- Profile info will be loaded here -->
+      </div>
+      <div id="editProfile" class="card" style="display: none;">
+        <h3>Modifier le profil</h3>
+        <form id="editProfileForm" enctype="multipart/form-data">
+          <label>Nouvelle photo de profil</label>
+          <input type="file" id="newProfilePic" accept="image/*" />
+          <label>Description</label>
+          <textarea id="newDescription" rows="4"></textarea>
+          <button type="submit" class="btn btn-primary">Mettre à jour</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Go Student | Portefeuille</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="go-student-layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">GS</div>
+      <div>
+        <h1>Go Student</h1>
+        <p>Covoiturage etudiant</p>
+      </div>
+    </div>
+    <nav class="side-nav">
+      <a href="index.html" class="nav-item">Accueil</a>
+      <a href="student-dashboard.html" class="nav-item">Mes trajets</a>
+      <a href="trip.html" class="nav-item">Reservations</a>
+      <a href="profile.html" class="nav-item">Profil</a>
+      <a href="wallet.html" class="nav-item is-active">Portefeuille</a>
+      <a href="#" id="logoutNav" class="nav-item" style="display: none;">Deconnexion</a>
+      <a href="login.html" class="nav-item">Connexion</a>
+    </nav>
+    <div class="sidebar-user">
+      <div class="avatar-chip">OB</div>
+      <div>
+        <strong>Etudiant</strong>
+        <p>Bienvenue</p>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="main-header">
+      <div>
+        <h2>Mon Portefeuille</h2>
+        <p>Gerez votre solde et rechargez votre portefeuille virtuellement</p>
+      </div>
+      <div class="header-actions">
+        <button id="darkModeToggle" type="button" class="btn btn-secondary">Mode Sombre</button>
+      </div>
+    </header>
+
+    <section class="card wallet-card">
+      <h3>Solde du Portefeuille</h3>
+      <p id="walletBalance" class="profile-pill">Solde du portefeuille : 0 MAD</p>
+
+      <form id="walletTopUpForm" class="booking-form">
+        <label>Methode de paiement virtuelle</label>
+        <select id="walletMethod" required>
+          <option value="mastercard">Mastercard</option>
+          <option value="visa">Visa</option>
+          <option value="paypal">PayPal</option>
+        </select>
+
+        <div id="walletCardFields" class="wallet-fields">
+          <label>Nom du titulaire de la carte</label>
+          <input type="text" id="walletCardHolder" placeholder="Ex: Omar Benjelloun" />
+
+          <label>Numero de carte</label>
+          <input type="text" id="walletCardNumber" placeholder="16 chiffres" inputmode="numeric" maxlength="19" autocomplete="cc-number" />
+
+          <label>Code de securite (CVC)</label>
+          <input type="password" id="walletCardSecurity" placeholder="3 ou 4 chiffres" inputmode="numeric" maxlength="4" autocomplete="cc-csc" />
+        </div>
+
+        <div id="walletPaypalFields" class="wallet-fields" style="display: none;">
+          <label>Email PayPal</label>
+          <input type="email" id="walletPaypalEmail" placeholder="email@paypal.com" />
+
+          <label>Mot de passe PayPal</label>
+          <input type="password" id="walletPaypalPassword" placeholder="Mot de passe PayPal" />
+        </div>
+
+        <label>Montant a ajouter</label>
+        <input type="number" id="walletAmount" min="10" step="10" placeholder="Montant en MAD" required />
+
+        <button type="submit" class="btn btn-primary">Ajouter les fonds virtuellement</button>
+      </form>
+
+      <div id="walletMessage" class="message"></div>
+      <p class="small-text">Simulation virtuelle uniquement: aucune transaction bancaire reelle n'est effectuee.</p>
+    </section>
+
+    <section id="driverWithdrawSection" class="card wallet-card" style="display: none;">
+      <h3>Retrait Driver</h3>
+      <form id="withdrawForm" class="booking-form">
+        <label>Montant a retirer</label>
+        <input type="number" id="withdrawAmount" min="1" step="1" placeholder="Montant en MAD" required />
+
+        <label>Methode de retrait</label>
+        <select id="withdrawMethod" required>
+          <option value="wafacash">WafaCash</option>
+          <option value="westernunion">WesternUnion</option>
+          <option value="bankaccount">Bank Account</option>
+        </select>
+
+        <p class="small-text">Frais de retrait: 10% (vers portefeuille admin).</p>
+        <button type="submit" class="btn btn-primary">Retirer</button>
+      </form>
+      <div id="withdrawMessage" class="message"></div>
+    </section>
+
+    <section class="card wallet-history-card">
+      <h3>Historique paiements et reservations</h3>
+      <div id="paymentHistoryList" class="history-list">
+        <p class="small-text">Chargement de l'historique...</p>
+      </div>
+    </section>
+  </main>
+  <script src="js/main.js"></script>
+</body>
+</html>

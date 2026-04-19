@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Go Student | Mes trajets</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="go-student-layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">GS</div>
+      <div>
+        <h1>Go Student</h1>
+        <p>Covoiturage etudiant</p>
+      </div>
+    </div>
+    <nav class="side-nav">
+      <a href="index.html" class="nav-item">Accueil</a>
+      <a href="student-dashboard.html" class="nav-item is-active">Mes trajets</a>
+      <a href="trip.html" class="nav-item">Reservations</a>
+      <a href="profile.html" class="nav-item">Profil</a>
+      <a href="wallet.html" class="nav-item">Portefeuille</a>
+      <a href="driver-dashboard.html" class="nav-item">Publier un trajet</a>
+      <a href="#" id="logoutNav" class="nav-item" style="display: none;">Deconnexion</a>
+      <a href="login.html" class="nav-item">Connexion</a>
+    </nav>
+    <div class="sidebar-user">
+      <div class="avatar-chip">ET</div>
+      <div>
+        <strong>Profil etudiant</strong>
+        <p>Go Student</p>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="main-header">
+      <div>
+        <h2>Mes reservations</h2>
+        <p>Consultez vos trajets reserves</p>
+      </div>
+      <div class="header-actions">
+        <button id="darkModeToggle" type="button" class="btn btn-secondary">Mode Sombre</button>
+        <a href="index.html" class="btn btn-secondary">Trouver un trajet</a>
+        <button id="logoutButton" class="btn btn-primary">Se deconnecter</button>
+      </div>
+    </header>
+
+    <div id="studentInfo" class="profile-pill"></div>
+    <div id="studentBookings" class="trip-list"></div>
+  </main>
+  <script src="js/main.js"></script>
+</body>
+</html>
