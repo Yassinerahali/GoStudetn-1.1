@@ -26,6 +26,19 @@
       --font-body: 'DM Sans', sans-serif;
       --font-display: 'Syne', sans-serif;
     }
+    body.option-pink {
+      --blue-50:  #FFF0F8;
+      --blue-100: #FFC2E3;
+      --blue-400: #F472B6;
+      --blue-600: #DB2777;
+      --blue-800: #BE185D;
+      --blue-900: #831843;
+      --accent:   #E91E8C;
+      --accent-light: #FFE3F3;
+      --shadow-sm: 0 2px 8px rgba(233,30,140,.08);
+      --shadow-md: 0 8px 32px rgba(233,30,140,.12);
+      --shadow-lg: 0 20px 60px rgba(233,30,140,.18);
+    }
     html[lang="ar"] {
       --font-body: 'Cairo', sans-serif;
       --font-display: 'Cairo', sans-serif;
@@ -363,6 +376,36 @@
     .footer-bottom { display:flex; justify-content:space-between; align-items:center; padding-top:28px; flex-wrap:wrap; gap:12px; }
     .footer-bottom p { font-size:13px; color:rgba(255,255,255,.35); }
     .footer-heart { color:var(--pink); }
+
+    body.option-pink nav { border-bottom-color: rgba(233,30,140,.1); }
+    body.option-pink .hero {
+      background: linear-gradient(160deg, #FFF0F8 0%, #FFFFFF 55%, #FFF0F8 100%);
+    }
+    body.option-pink .hero::before {
+      background: radial-gradient(circle, rgba(233,30,140,.12) 0%, transparent 70%);
+    }
+    body.option-pink .highlight::after {
+      background: linear-gradient(90deg, var(--accent), rgba(233,30,140,.3));
+    }
+    body.option-pink .safety {
+      background: linear-gradient(135deg,#FEF0F7 0%,#FFF0F8 100%);
+    }
+    body.option-pink .morocco-svg-wrap svg [stroke="#378ADD"],
+    body.option-pink .morocco-svg-wrap svg [stroke="#5BA8E5"],
+    body.option-pink .morocco-svg-wrap svg [stroke="#1B6FD8"] {
+      stroke: var(--accent);
+    }
+    body.option-pink .morocco-svg-wrap svg [fill="#378ADD"],
+    body.option-pink .morocco-svg-wrap svg [fill="#5BA8E5"],
+    body.option-pink .morocco-svg-wrap svg [fill="#1B6FD8"] {
+      fill: var(--accent);
+    }
+    body.option-pink .morocco-svg-wrap svg [fill="rgba(55,138,221,0.12)"] {
+      fill: rgba(233,30,140,.12);
+    }
+    body.option-pink .morocco-svg-wrap svg [stroke="rgba(181,212,244,0.5)"] {
+      stroke: rgba(255,194,227,.6);
+    }
 
     /* ── Responsive ── */
     @media(max-width:900px){

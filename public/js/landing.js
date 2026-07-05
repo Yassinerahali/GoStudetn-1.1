@@ -158,6 +158,12 @@
 
     let currentLang = 'en';
 
+    const applyPinkOption = () => {
+      document.body.classList.toggle('option-pink', localStorage.getItem('goStudentPinkMode') === 'on');
+    };
+
+    applyPinkOption();
+
     function setLang(lang) {
       currentLang = lang;
       const html = document.documentElement;
@@ -192,7 +198,10 @@
     /* ── Scroll & Intersection ── */
     const nav = document.querySelector('nav');
     window.addEventListener('scroll', () => {
-      nav.style.boxShadow = window.scrollY > 20 ? '0 4px 24px rgba(12,68,124,.1)' : '';
+      const shadowColor = document.body.classList.contains('option-pink')
+        ? 'rgba(233,30,140,.12)'
+        : 'rgba(12,68,124,.1)';
+      nav.style.boxShadow = window.scrollY > 20 ? `0 4px 24px ${shadowColor}` : '';
     });
 
     document.querySelectorAll('a[href^="#"]').forEach(a => {

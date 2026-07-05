@@ -993,21 +993,6 @@ button {
   margin-top: 0.35rem;
 }
 
-body.option-pink {
-  --primary: #f261b9;
-  --primary-dark: #d64b9f;
-  --line: #f6c5e6;
-  --bg: #fff3fb;
-}
-
-body.option-pink .safety-tag {
-  color: #ca2d8f;
-}
-
-body.option-pink .ride-price {
-  background: #f261b9;
-}
-
 body.dark-mode {
   --bg: #111827;
   --surface: #1f2937;
@@ -2050,6 +2035,112 @@ body.modal-open {
   --shadow-card: 0 2px 12px rgba(26, 63, 190, 0.07);
 }
 
+body.option-pink {
+  --primary: #e91e8c;
+  --primary-dark: #b5006e;
+  --pink: #e91e8c;
+  --pink-soft: #ffe3f3;
+  --blue: #e91e8c;
+  --blue-dark: #b5006e;
+  --blue-mid: #d3167f;
+  --blue-light: #ffe3f3;
+  --blue-pill: #ffc2e3;
+  --accent: #e91e8c;
+  --bg: #fff3fb;
+  --surface-soft: #fff7fc;
+  --line: rgba(233, 30, 140, 0.18);
+  --muted: #8a5f7a;
+  --profile-blue: #e91e8c;
+  --profile-blue-dark: #b5006e;
+  --shadow: 0 4px 24px rgba(233, 30, 140, 0.1);
+  --shadow-card: 0 2px 12px rgba(233, 30, 140, 0.08);
+}
+
+body.option-pink.dark-mode {
+  --primary: #f472b6;
+  --primary-dark: #db2777;
+  --blue: #f472b6;
+  --blue-dark: #db2777;
+  --blue-mid: #ec4899;
+  --blue-light: #3a1730;
+  --blue-pill: #5a2248;
+  --accent: #f472b6;
+  --line: rgba(244, 114, 182, 0.22);
+  --muted: #d8a6c3;
+  --profile-blue: #f472b6;
+  --profile-blue-dark: #db2777;
+}
+
+body.option-pink .brand-mark,
+body.option-pink .avatar-chip,
+body.option-pink .driver-avatar {
+  background: linear-gradient(140deg, #f472b6, #db2777);
+  color: #fff;
+}
+
+body.option-pink .sidebar .brand-mark,
+body.option-pink .sidebar .avatar-chip,
+body.option-pink .lang-selector button:hover,
+body.option-pink .lang-selector button.active,
+body.option-pink .profile-language-switcher button:hover,
+body.option-pink .profile-language-switcher button.is-active {
+  background: #fff;
+  color: var(--blue);
+}
+
+body.option-pink .safety-tag,
+body.option-pink .ride-price,
+body.option-pink .auth-forgot-link,
+body.option-pink .auth-terms a,
+body.option-pink .act-dot.blue {
+  color: var(--blue);
+}
+
+body.option-pink .ride-price {
+  background: var(--blue);
+  color: #fff;
+}
+
+body.option-pink .btn-primary,
+body.option-pink .auth-submit-btn,
+body.option-pink .auth-tab.active,
+body.option-pink .auth-left-panel,
+body.option-pink .sidebar,
+body.option-pink.profile-page .sidebar {
+  background: var(--blue);
+}
+
+body.option-pink .btn-primary:hover,
+body.option-pink .auth-submit-btn:hover {
+  background: var(--blue-mid);
+}
+
+body.option-pink input:focus,
+body.option-pink select:focus,
+body.option-pink textarea:focus,
+body.option-pink .auth-modern-form input:focus,
+body.option-pink .auth-modern-form select:focus,
+body.option-pink .auth-modern-form textarea:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(233, 30, 140, 0.18);
+}
+
+body.option-pink .auth-modern-form input,
+body.option-pink .auth-modern-form select,
+body.option-pink .auth-modern-form textarea,
+body.option-pink .auth-role-opt,
+body.option-pink .auth-radio-row,
+body.option-pink .auth-tabs,
+body.option-pink .auth-lang-row button {
+  border-color: rgba(233, 30, 140, 0.18);
+  background: #fff7fc;
+}
+
+body.option-pink .auth-role-opt.selected {
+  border-color: var(--blue);
+  background: var(--blue-light);
+}
+
 body {
   font-family: "Outfit", "Nunito Sans", "Segoe UI", sans-serif;
   background: var(--bg);
@@ -2068,6 +2159,22 @@ body.dark-mode {
   --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
   --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.3);
   background: var(--bg);
+}
+
+body.option-pink.dark-mode {
+  --primary: #f472b6;
+  --primary-dark: #db2777;
+  --pink: #f472b6;
+  --blue: #f472b6;
+  --blue-dark: #db2777;
+  --blue-mid: #ec4899;
+  --blue-light: #3a1730;
+  --blue-pill: #5a2248;
+  --accent: #f472b6;
+  --line: rgba(244, 114, 182, 0.22);
+  --muted: #d8a6c3;
+  --profile-blue: #f472b6;
+  --profile-blue-dark: #db2777;
 }
 
 .go-student-layout,
@@ -3367,4 +3474,130 @@ body.auth-split-page .message {
     align-items: flex-start;
     flex-direction: column;
   }
+}
+
+body.option-pink .brand-mark,
+body.option-pink .avatar-chip,
+body.option-pink .driver-avatar,
+body.option-pink .btn-primary,
+body.option-pink .auth-submit-btn,
+body.option-pink .auth-tab.active,
+body.option-pink .auth-left-panel,
+body.option-pink .sidebar,
+body.option-pink.profile-page .sidebar,
+body.option-pink .loyalty-progress-bar,
+body.option-pink .trip-progress-fill,
+body.option-pink .admin-status-badge.scheduled,
+body.option-pink .act-dot.blue {
+  background: var(--blue);
+  color: #fff;
+}
+
+body.option-pink .brand-mark,
+body.option-pink .avatar-chip {
+  color: var(--blue);
+  background: #fff;
+}
+
+body.option-pink .driver-avatar {
+  background: linear-gradient(145deg, #f472b6, #db2777);
+  color: #fff;
+}
+
+body.option-pink .btn-primary,
+body.option-pink .auth-submit-btn {
+  box-shadow: 0 8px 22px rgba(233, 30, 140, 0.28);
+}
+
+body.option-pink .btn-primary:hover,
+body.option-pink .auth-submit-btn:hover {
+  background: var(--blue-mid);
+  box-shadow: 0 10px 26px rgba(233, 30, 140, 0.34);
+}
+
+body.option-pink .btn-secondary:hover,
+body.option-pink .auth-modern-form input:focus,
+body.option-pink .auth-modern-form select:focus,
+body.option-pink .auth-modern-form textarea:focus,
+body.option-pink input:focus,
+body.option-pink select:focus,
+body.option-pink textarea:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(233, 30, 140, 0.18);
+}
+
+body.option-pink .auth-page > .lang-selector button:hover,
+body.option-pink .auth-page > .lang-selector button.active,
+body.option-pink .auth-lang-row button:hover,
+body.option-pink .auth-lang-row button.active,
+body.option-pink .auth-role-opt.selected {
+  border-color: var(--blue);
+  background: var(--blue);
+  color: #fff;
+}
+
+body.option-pink .auth-tabs,
+body.option-pink .auth-modern-form input,
+body.option-pink .auth-modern-form select,
+body.option-pink .auth-modern-form textarea,
+body.option-pink .auth-role-opt,
+body.option-pink .auth-radio-row,
+body.option-pink .auth-lang-row button {
+  border-color: rgba(233, 30, 140, 0.18);
+}
+
+body.option-pink .auth-tabs,
+body.option-pink .auth-modern-form input,
+body.option-pink .auth-modern-form select,
+body.option-pink .auth-modern-form textarea,
+body.option-pink .auth-role-opt,
+body.option-pink .auth-radio-row,
+body.option-pink.auth-split-page {
+  background: #fff7fc;
+}
+
+body.option-pink .auth-tab,
+body.option-pink .auth-field label,
+body.option-pink .auth-input-icon,
+body.option-pink .auth-eye-btn,
+body.option-pink .auth-remember,
+body.option-pink .auth-terms,
+body.option-pink .auth-help-text,
+body.option-pink .auth-driver-note,
+body.option-pink .auth-form-heading p,
+body.option-pink .profile-pill {
+  color: #8a5f7a;
+}
+
+body.option-pink .auth-forgot-link,
+body.option-pink .auth-terms a,
+body.option-pink .ride-price,
+body.option-pink .safety-tag,
+body.option-pink .profile-avatar,
+body.option-pink .admin-horizontal-value {
+  color: var(--blue);
+}
+
+body.option-pink .ride-price {
+  background: var(--blue);
+  color: #fff;
+}
+
+body.option-pink .auth-form-heading h2,
+body.option-pink .auth-modern-form input,
+body.option-pink .auth-modern-form select,
+body.option-pink .auth-modern-form textarea,
+body.option-pink .auth-role-opt span,
+body.option-pink .auth-radio-row label {
+  color: #341225;
+}
+
+body.option-pink .profile-info-row > strong,
+body.option-pink .profile-info-row .status-pill {
+  background: linear-gradient(90deg, var(--profile-blue-dark), var(--profile-blue));
+}
+
+body.option-pink .admin-status-badge.scheduled {
+  border-color: var(--blue);
+  background: rgba(233, 30, 140, 0.15);
 }

@@ -2516,7 +2516,7 @@ const renderAdminIncomeChart = (containerId, totalId, series) => {
       <defs>
         <linearGradient id="${chartId}" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stop-color="#4ade80"></stop>
-          <stop offset="100%" stop-color="#2f7bff"></stop>
+          <stop offset="100%" stop-color="var(--primary)"></stop>
         </linearGradient>
       </defs>
       <line class="admin-chart-grid-line" x1="${padLeft}" y1="${padTop}" x2="${width - padRight}" y2="${padTop}"></line>
@@ -2669,7 +2669,7 @@ const renderAdminDashboardGraphics = (summary) => {
 
   const tripStatus = stats.tripStatusBreakdown || {};
   renderAdminDonutChart('adminTripStatusChart', [
-    { label: 'Scheduled', value: Number(tripStatus.scheduled || 0), color: '#2f7bff' },
+    { label: 'Scheduled', value: Number(tripStatus.scheduled || 0), color: 'var(--primary)' },
     { label: 'In Progress', value: Number(tripStatus.in_progress || 0), color: '#f59e0b' },
     { label: 'Completed', value: Number(tripStatus.completed || 0), color: '#22c55e' },
   ]);
