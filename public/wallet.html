@@ -18,9 +18,9 @@
     <nav class="side-nav">
       <a href="index.html" class="nav-item">Accueil</a>
       <a href="student-dashboard.html" class="nav-item">Mes trajets</a>
-      <a href="trip.html" class="nav-item">Reservations</a>
       <a href="profile.html" class="nav-item">Profil</a>
       <a href="wallet.html" class="nav-item is-active">Portefeuille</a>
+      <a href="receipt.html" class="nav-item">Reçu</a>
       <a href="#" id="logoutNav" class="nav-item" style="display: none;">Deconnexion</a>
       <a href="login.html" class="nav-item">Connexion</a>
     </nav>
@@ -65,6 +65,9 @@
 
           <label>Code de securite (CVC)</label>
           <input type="password" id="walletCardSecurity" placeholder="3 ou 4 chiffres" inputmode="numeric" maxlength="4" autocomplete="cc-csc" />
+
+          <label>Carte valide jusqu'au (MM/YY)</label>
+          <input type="text" id="walletCardValidUntil" placeholder="MM/YY" inputmode="numeric" maxlength="5" autocomplete="cc-exp" />
         </div>
 
         <div id="walletPaypalFields" class="wallet-fields" style="display: none;">

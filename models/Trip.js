@@ -12,6 +12,13 @@ const tripSchema = new mongoose.Schema(
     totalSeats: { type: Number, required: true, min: 1 },
     availableSeats: { type: Number, required: true, min: 0 },
     description: { type: String, trim: true },
+    status: {
+      type: String,
+      enum: ['scheduled', 'in_progress', 'completed'],
+      default: 'scheduled',
+    },
+    startedAt: { type: Date },
+    arrivedAt: { type: Date },
     createdAt: { type: Date, default: Date.now },
   },
   { timestamps: true }

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -18,6 +18,10 @@
     <nav class="side-nav">
       <a href="index.html" class="nav-item">Accueil</a>
       <a href="admin-dashboard.html" class="nav-item is-active">Admin Dashboard</a>
+      <a href="admin-wallet.html" class="nav-item">Admin Wallet</a>
+      <a href="admin-documents.html" class="nav-item">Documents & Validation</a>
+      <a href="admin-users.html" class="nav-item">Users Table</a>
+      <a href="receipt.html" class="nav-item">Reçu</a>
       <a href="#" id="logoutNav" class="nav-item">Deconnexion</a>
     </nav>
     <div class="sidebar-user">
@@ -36,17 +40,17 @@
         <p id="adminInfo">Loading admin profile...</p>
       </div>
       <div class="header-actions admin-actions">
-        <a href="#adminWalletSection" class="btn btn-primary">Admin Wallet</a>
-        <a href="#documentsValidationSection" class="btn btn-secondary">Documents & Validation</a>
-        <a href="#usersTableSection" class="btn btn-secondary">Users Table</a>
+        <a href="admin-wallet.html" class="btn btn-primary">Admin Wallet</a>
+        <a href="admin-documents.html" class="btn btn-secondary">Documents & Validation</a>
+        <a href="admin-users.html" class="btn btn-secondary">Users Table</a>
         <button id="logoutButton" class="btn btn-secondary">Logout</button>
       </div>
     </header>
 
-    <section id="tripsSituationSection" class="card wallet-history-card">
-      <h3>Trips Situation</h3>
+    <section class="card wallet-history-card">
+      <h3>Admin Overview</h3>
       <div class="card-grid">
-        <div class="card" id="adminWalletSection">
+        <div class="card">
           <h3>Admin Wallet</h3>
           <p id="adminWallet">0 MAD</p>
         </div>
@@ -73,38 +77,82 @@
       </div>
     </section>
 
-    <section id="documentsValidationSection" class="card wallet-history-card">
-      <h3>Documents and Accounts Validation</h3>
-      <div id="adminPendingDocs" class="history-list">
-        <p class="small-text">Loading documents...</p>
+    <section class="admin-dashboard-grid">
+      <article class="card admin-stat-card">
+        <span>Platform Revenue</span>
+        <strong id="adminTotalRevenue">0 MAD</strong>
+        <p id="adminAverageBookingValue">Average booking: 0 MAD</p>
+      </article>
+      <article class="card admin-stat-card">
+        <span>Seats Reserved</span>
+        <strong id="adminSeatsBooked">0</strong>
+        <p id="adminConfirmedBookings">Confirmed bookings: 0</p>
+      </article>
+      <article class="card admin-stat-card">
+        <span>Documents Waiting</span>
+        <strong id="adminPendingDocuments">0</strong>
+        <p id="adminRejectedDocuments">Rejected documents: 0</p>
+      </article>
+      <article class="card admin-stat-card">
+        <span>Driver Withdrawals</span>
+        <strong id="adminWithdrawnByDrivers">0 MAD</strong>
+        <p id="adminFeeRate">Admin fees collected: 0 MAD</p>
+      </article>
+    </section>
+
+    <section class="admin-dashboard-analytics">
+      <article class="card admin-graphic-card">
+        <div class="admin-graphic-head">
+          <h3>User Validation</h3>
+          <p class="small-text">Pending, approved, and rejected accounts.</p>
+        </div>
+        <div id="adminUserStatusChart" class="admin-donut-chart"></div>
+      </article>
+      <article class="card admin-graphic-card">
+        <div class="admin-graphic-head">
+          <h3>Trip Status</h3>
+          <p class="small-text">Scheduled, active, and completed trips.</p>
+        </div>
+        <div id="adminTripStatusChart" class="admin-donut-chart"></div>
+      </article>
+    </section>
+
+    <section class="card wallet-history-card">
+      <div class="admin-graphic-head">
+        <h3>Recent Activity</h3>
+        <p class="small-text">Bookings, trip publications, and booking revenue over the last 30 days.</p>
+      </div>
+      <div class="admin-trend-grid">
+        <div>
+          <h4>Bookings Per Day</h4>
+          <div id="adminBookingsTrendChart" class="admin-wallet-chart"></div>
+        </div>
+        <div>
+          <h4>Revenue Per Day</h4>
+          <div id="adminRevenueTrendChart" class="admin-wallet-chart"></div>
+        </div>
+        <div>
+          <h4>Trips Published Per Day</h4>
+          <div id="adminTripsTrendChart" class="admin-wallet-chart"></div>
+        </div>
       </div>
     </section>
 
-    <section id="usersTableSection" class="card wallet-history-card">
-      <h3>Users Table</h3>
-      <div class="admin-table-wrap">
-        <table class="admin-table">
-          <thead>
-            <tr>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Email</th>
-              <th>Password</th>
-              <th>Sexe</th>
-              <th>Role</th>
-              <th>Balance</th>
-              <th>Spent (Student)</th>
-              <th>Withdrawn (Driver)</th>
-              <th>Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="adminUsersTableBody">
-            <tr><td colspan="11">Loading users...</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div id="adminUsersMessage" class="message"></div>
+    <section class="admin-dashboard-analytics">
+      <article class="card admin-graphic-card">
+        <div class="admin-graphic-head">
+          <h3>Payment Methods</h3>
+          <p class="small-text">Bookings by payment channel.</p>
+        </div>
+        <div id="adminPaymentMethodsChart" class="admin-horizontal-chart"></div>
+      </article>
+      <article class="card admin-graphic-card">
+        <div class="admin-graphic-head">
+          <h3>Top Routes</h3>
+          <p class="small-text">Most published departure and destination pairs.</p>
+        </div>
+        <div id="adminTopRoutesChart" class="admin-horizontal-chart"></div>
+      </article>
     </section>
   </main>
   <script src="js/main.js"></script>

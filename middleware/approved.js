@@ -8,9 +8,15 @@ const requireApprovedAccount = (req, res, next) => {
   }
 
   if (!req.user.accountApproved) {
+    const status = req.user.documentsValidationStatus || 'pending';
+    const rejectionReason = String(req.user.documentsRejectionReason || '').trim();
     return res.status(403).json({
-      message: 'Your account is pending document validation by admin.',
-      documentsValidationStatus: req.user.documentsValidationStatus || 'pending',
+      message:
+        status === 'rejected'
+          ? 'Your documents were rejected. Please re-upload your documents and wait for approval.'
+          : 'Your account is pending document validation by admin.',
+      documentsValidationStatus: status,
+      documentsRejectionReason: rejectionReason,
     });
   }
 

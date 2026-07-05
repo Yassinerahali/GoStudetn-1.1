@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Go Student | Reçu de Paiement</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="go-student-layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">GS</div>
+      <div>
+        <h1>Go Student</h1>
+        <p>Covoiturage etudiant</p>
+      </div>
+    </div>
+    <nav class="side-nav">
+      <a href="index.html" class="nav-item">Accueil</a>
+      <a href="student-dashboard.html" class="nav-item">Mes trajets</a>
+      <a href="wallet.html" class="nav-item">Portefeuille</a>
+      <a href="receipt.html" class="nav-item is-active">Reçu</a>
+      <a href="#" id="logoutNav" class="nav-item" style="display: none;">Deconnexion</a>
+      <a href="login.html" class="nav-item">Connexion</a>
+    </nav>
+    <div class="sidebar-user">
+      <div class="avatar-chip">ET</div>
+      <div>
+        <strong>Profil etudiant</strong>
+        <p>Go Student</p>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="main-header">
+      <div>
+        <h2>Reçu de Paiement</h2>
+        <p>Confirmation de réservation</p>
+      </div>
+      <div class="header-actions">
+        <a href="student-dashboard.html" class="btn btn-secondary">My Bookings</a>
+        <button id="receiptPrintButton" type="button" class="btn btn-secondary">Print</button>
+        <button id="receiptDownloadPdfButton" type="button" class="btn btn-primary">Download PDF</button>
+      </div>
+    </header>
+
+    <div id="receiptMessage" class="message"></div>
+
+    <section id="receiptCard" class="receipt-card">
+      <div class="receipt-header">
+        <img src="assets/gostudent-logo.png" alt="GoStudent Logo" class="receipt-logo" />
+        <div>
+          <h3>Reçu de Paiement</h3>
+          <p>Confirmation de réservation</p>
+        </div>
+      </div>
+
+      <div class="receipt-grid">
+        <div class="receipt-field"><span>Receipt number</span><strong id="receiptNumber">-</strong></div>
+        <div class="receipt-field"><span>Booking date</span><strong id="receiptBookingDate">-</strong></div>
+        <div class="receipt-field"><span>Student</span><strong id="receiptStudentName">-</strong></div>
+        <div class="receipt-field"><span>Student phone</span><strong id="receiptStudentPhone">-</strong></div>
+        <div class="receipt-field"><span>Driver</span><strong id="receiptDriverName">-</strong></div>
+        <div class="receipt-field"><span>Driver phone</span><strong id="receiptDriverPhone">-</strong></div>
+        <div class="receipt-field"><span>Departure city</span><strong id="receiptDeparture">-</strong></div>
+        <div class="receipt-field"><span>Destination city</span><strong id="receiptDestination">-</strong></div>
+        <div class="receipt-field"><span>Trip date</span><strong id="receiptTripDate">-</strong></div>
+        <div class="receipt-field"><span>Trip time</span><strong id="receiptTripTime">-</strong></div>
+        <div class="receipt-field"><span>Vehicle type</span><strong id="receiptVehicleType">-</strong></div>
+        <div class="receipt-field"><span>Reserved seats</span><strong id="receiptSeats">-</strong></div>
+        <div class="receipt-field"><span>Price paid</span><strong id="receiptPricePaid">-</strong></div>
+        <div class="receipt-field"><span>Payment method</span><strong id="receiptPaymentMethod">-</strong></div>
+        <div class="receipt-field"><span>Loyalty points earned</span><strong id="receiptLoyaltyPoints">-</strong></div>
+        <div class="receipt-field"><span>Booking status</span><strong id="receiptStatus">-</strong></div>
+      </div>
+
+      <div class="receipt-footer">
+        <p><strong>Merci d’avoir choisi GoStudent</strong></p>
+        <p>Support: <span id="receiptSupport">support@gostudent.ma</span></p>
+        <p>Booking ID / QR: <span id="receiptQrPayload">-</span></p>
+        <p class="receipt-terms">Présentez ce reçu avant votre trajet</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

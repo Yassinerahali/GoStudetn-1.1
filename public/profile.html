@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -6,37 +6,35 @@
   <title>Profile | Go Student</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
-<body class="go-student-layout">
+<body class="go-student-layout profile-page">
   <aside class="sidebar">
     <div class="brand">
       <div class="brand-mark">GS</div>
       <div>
-        <h1>Go Student</h1>
-        <p>Covoiturage etudiant</p>
+        <h1>GoStudent</h1>
+        <p>Voyagez · Economisez</p>
       </div>
     </div>
     <nav class="side-nav">
       <a href="index.html" class="nav-item">Accueil</a>
       <a href="student-dashboard.html" class="nav-item">Mes trajets</a>
-      <a href="trip.html" class="nav-item">Reservations</a>
       <a href="profile.html" class="nav-item is-active">Profil</a>
       <a href="wallet.html" class="nav-item">Portefeuille</a>
+      <a href="receipt.html" class="nav-item">Reçu</a>
       <a href="#" id="logoutNav" class="nav-item" style="display: none;">Deconnexion</a>
       <a href="login.html" class="nav-item">Connexion</a>
       <a href="register.html" class="nav-item">Inscription</a>
     </nav>
-    <div class="sidebar-user">
-      <div class="avatar-chip">OB</div>
-      <div>
-        <strong>Etudiant</strong>
-        <p>Bienvenue</p>
-      </div>
+    <div class="lang-selector">
+      <button id="lang-en" onclick="setLanguage('en')">GB</button>
+      <button id="lang-fr" onclick="setLanguage('fr')">FR</button>
+      <button id="lang-ar" onclick="setLanguage('ar')">MA</button>
     </div>
   </aside>
 
   <main class="main-content">
     <header class="main-header">
-      <div>
+      <div class="profile-title-block">
         <h2>Profil Utilisateur</h2>
         <p>Informations du profil</p>
       </div>
@@ -55,14 +53,38 @@
         <form id="editProfileForm" enctype="multipart/form-data">
           <label>Nouvelle photo de profil</label>
           <input type="file" id="newProfilePic" accept="image/*" />
+          <label>Phone Number</label>
+          <input type="tel" id="newPhoneNumber" placeholder="Ex: +212612345678" />
+          <div id="bankAccountField" style="display: none;">
+            <label>Bank Account Number</label>
+            <input type="text" id="newBankAccountNumber" placeholder="Ex: 0123456789012345" />
+          </div>
           <label>Description</label>
           <textarea id="newDescription" rows="4"></textarea>
-          <button type="submit" class="btn btn-primary">Mettre à jour</button>
+          <button type="submit" class="btn btn-primary">Mettre a jour</button>
+        </form>
+      </div>
+      <div id="resubmitDocumentsSection" class="card" style="display: none;">
+        <h3>Re-upload Rejected Documents</h3>
+        <p id="resubmitReason" class="small-text"></p>
+        <form id="resubmitDocumentsForm" enctype="multipart/form-data">
+          <label>Profile Picture</label>
+          <input type="file" id="resubmitProfilePic" accept="image/*" required />
+          <label>Scholarship Card</label>
+          <input type="file" id="resubmitScholarshipCard" accept=".pdf,image/*" required />
+          <label>ID Card Recto/Verso (PDF)</label>
+          <input type="file" id="resubmitIdCardPdf" accept=".pdf" required />
+          <label>Driving Licence (Driver only)</label>
+          <input type="file" id="resubmitDrivingLicence" accept=".pdf,image/*" />
+          <label>Car Documents (Driver only)</label>
+          <input type="file" id="resubmitCarDocuments" accept=".pdf,image/*" multiple />
+          <button type="submit" class="btn btn-primary">Submit For Re-Validation</button>
         </form>
       </div>
     </section>
   </main>
 
+  <script src="js/translations.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

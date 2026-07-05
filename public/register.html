@@ -1,81 +1,266 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Register | Ride Sharing</title>
+  <title>GoStudent | Inscription</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
-<body>
-  <main class="container auth-page">
-    <div class="auth-card">
-      <h1>Create Account</h1>
-      <form id="registerForm" enctype="multipart/form-data">
-        <label>Full name</label>
-        <input type="text" id="registerName" required />
-        <label>Email</label>
-        <input type="email" id="registerEmail" required />
-        <label>Password</label>
-        <input type="password" id="registerPassword" required minlength="6" />
-        <label>Role</label>
-        <select id="registerRole" required>
-          <option value="student">Student</option>
-          <option value="driver">Driver</option>
-        </select>
-        <label>Gender</label>
-        <div>
-          <input type="radio" id="male" name="gender" value="male" required />
-          <label for="male">Man</label>
-          <input type="radio" id="female" name="gender" value="female" required />
-          <label for="female">Woman</label>
+<body class="auth-split-page">
+  <main class="auth-shell">
+    <section class="auth-left-panel">
+      <div class="auth-panel-content">
+        <a href="index.html" class="auth-logo-wrap" aria-label="GoStudent accueil">
+          <img src="assets/gostudent-auth-logo.png" alt="GoStudent" />
+        </a>
+        <div class="auth-panel-headline">
+          <h1>Voyagez.<br />Economisez.<br />Reussissez.</h1>
+          <p>Rejoignez des milliers d'etudiants qui voyagent malin a travers le Maroc.</p>
         </div>
-        <label>Description</label>
-        <textarea id="registerDescription" required></textarea>
-        <label>Profile Picture</label>
-        <input type="file" id="registerProfilePic" accept="image/*" required />
-        <div id="scholarshipField">
-          <label>Scholarship Card (PDF)</label>
-          <input type="file" id="registerScholarshipCard" accept=".pdf" required />
+        <div class="auth-features">
+          <div class="auth-feature-item">
+            <span class="auth-feat-icon">↔</span>
+            <div>
+              <strong>Trajets partages</strong>
+              <span>Trouvez ou proposez un trajet</span>
+            </div>
+          </div>
+          <div class="auth-feature-item">
+            <span class="auth-feat-icon">DH</span>
+            <div>
+              <strong>Economisez jusqu'a 70%</strong>
+              <span>Frais de voyage reduits</span>
+            </div>
+          </div>
+          <div class="auth-feature-item">
+            <span class="auth-feat-icon">✓</span>
+            <div>
+              <strong>Voyages securises</strong>
+              <span>Profils verifies et notes</span>
+            </div>
+          </div>
         </div>
-        <div id="studentFields">
-          <p class="small-text">Scholarship card is required for students.</p>
+      </div>
+    </section>
+
+    <section class="auth-right-panel">
+      <div class="auth-form-box auth-form-box-wide">
+        <div class="auth-tabs">
+          <a class="auth-tab" href="login.html" data-i18n="nav.login">Connexion</a>
+          <a class="auth-tab active" href="register.html" data-i18n="nav.register">Inscription</a>
         </div>
-        <div id="driverFields" style="display: none;">
-          <label>Driving Licence (PDF)</label>
-          <input type="file" id="registerDrivingLicence" accept=".pdf" />
-          <label>Car Licence and Related Documents (PDFs)</label>
-          <input type="file" id="registerCarDocuments" accept=".pdf" multiple />
+
+        <div class="auth-form-heading">
+          <h2 data-i18n="register.heading">Creer un compte</h2>
+          <p data-i18n="register.subheading">Rejoignez la communaute GoStudent</p>
         </div>
-        <button type="submit" class="btn btn-primary">Register</button>
-        <p class="small-text">Already have an account? <a href="login.html">Login</a></p>
-      </form>
-      <div id="registerMessage" class="message"></div>
-    </div>
+
+        <form id="registerForm" class="auth-modern-form" enctype="multipart/form-data">
+          <div class="auth-field">
+            <label for="registerRole" data-i18n="register.role.label">Je suis</label>
+            <div class="auth-role-select">
+              <label class="auth-role-opt selected" data-role-card="student">
+                <input type="radio" name="roleChoice" value="student" checked />
+                <span data-i18n="register.student">Etudiant</span>
+              </label>
+              <label class="auth-role-opt" data-role-card="driver">
+                <input type="radio" name="roleChoice" value="driver" />
+                <span data-i18n="register.driver">Conducteur</span>
+              </label>
+            </div>
+            <select id="registerRole" required aria-label="Role">
+              <option value="student">Student</option>
+              <option value="driver">Driver</option>
+            </select>
+          </div>
+
+          <div class="auth-field">
+            <label for="registerName" data-i18n="register.name">Nom complet</label>
+            <div class="auth-input-wrap">
+              <span class="auth-input-icon">ID</span>
+              <input type="text" id="registerName" placeholder="Yassine Rahali" required />
+            </div>
+          </div>
+
+          <div class="auth-field-row">
+            <div class="auth-field">
+              <label for="registerEmail" data-i18n="register.email">Email</label>
+              <div class="auth-input-wrap">
+                <span class="auth-input-icon">@</span>
+                <input type="email" id="registerEmail" placeholder="votre@email.com" required />
+              </div>
+            </div>
+            <div class="auth-field">
+              <label for="registerPhoneNumber" data-i18n="register.phone">Telephone</label>
+              <div class="auth-input-wrap">
+                <span class="auth-input-icon">☎</span>
+                <input type="tel" id="registerPhoneNumber" placeholder="+212612345678" required />
+              </div>
+            </div>
+          </div>
+
+          <div class="auth-field-row">
+            <div class="auth-field">
+              <label for="registerPassword" data-i18n="register.password">Mot de passe</label>
+              <div class="auth-input-wrap">
+                <span class="auth-input-icon">#</span>
+                <input type="password" id="registerPassword" placeholder="Min. 6 caracteres" required minlength="6" />
+              </div>
+            </div>
+            <div class="auth-field">
+              <label data-i18n="register.gender">Genre</label>
+              <div class="auth-radio-row">
+                <label><input type="radio" id="male" name="gender" value="male" required /> <span data-i18n="register.gender.male">Homme</span></label>
+                <label><input type="radio" id="female" name="gender" value="female" required /> <span data-i18n="register.gender.female">Femme</span></label>
+              </div>
+            </div>
+          </div>
+
+          <div class="auth-field">
+            <label for="registerDescription" data-i18n="register.description">Description</label>
+            <textarea id="registerDescription" placeholder="Parlez-nous un peu de vous" data-i18n-placeholder="register.description.placeholder" required></textarea>
+          </div>
+
+          <div class="auth-field-row">
+            <div class="auth-field">
+              <label for="registerSpeciality" data-i18n="register.speciality">Specialite</label>
+              <input type="text" id="registerSpeciality" required />
+            </div>
+            <div class="auth-field">
+              <label for="registerIdCardNumber" data-i18n="register.idcard">Num CIN</label>
+              <input type="text" id="registerIdCardNumber" required />
+            </div>
+          </div>
+
+          <div class="auth-field-row">
+            <div class="auth-field">
+              <label for="registerProfilePic" data-i18n="register.profilePic">Photo de profil</label>
+              <input type="file" id="registerProfilePic" accept="image/*" required />
+            </div>
+            <div id="scholarshipField" class="auth-field">
+              <label for="registerScholarshipCard" data-i18n="register.scholarship">Carte etudiante (PDF)</label>
+              <input type="file" id="registerScholarshipCard" accept=".pdf" required />
+            </div>
+          </div>
+
+          <div id="idCardField" class="auth-field">
+            <label for="registerIdCardPdf" data-i18n="register.idPdf">Carte CIN Recto/Verso (PDF)</label>
+            <input type="file" id="registerIdCardPdf" accept=".pdf" required />
+          </div>
+
+          <div id="studentFields">
+            <p class="auth-help-text" data-i18n="register.student.help">La carte etudiante et la CIN sont requises pour les etudiants.</p>
+          </div>
+
+          <div id="driverFields" class="auth-driver-fields" style="display: none;">
+            <div class="auth-field">
+              <label for="registerBankAccountNumber" data-i18n="register.bank">Compte bancaire</label>
+              <input type="text" id="registerBankAccountNumber" placeholder="Ex: 0123456789012345" />
+            </div>
+            <div class="auth-field-row">
+              <div class="auth-field">
+                <label for="registerDrivingLicence" data-i18n="register.licence">Permis (PDF)</label>
+                <input type="file" id="registerDrivingLicence" accept=".pdf" />
+              </div>
+              <div class="auth-field">
+                <label for="registerCarRegistration" data-i18n="register.carRegistration">Carte grise (PDF)</label>
+                <input type="file" id="registerCarRegistration" class="driver-car-document" accept=".pdf" />
+              </div>
+            </div>
+            <div class="auth-upload-grid">
+              <div class="auth-field">
+                <label for="registerCarInsurance" data-i18n="register.carInsurance">Assurance voiture (PDF)</label>
+                <input type="file" id="registerCarInsurance" class="driver-car-document" accept=".pdf" />
+              </div>
+              <div class="auth-field">
+                <label for="registerTechnicalInspection" data-i18n="register.technicalInspection">Visite technique (PDF)</label>
+                <input type="file" id="registerTechnicalInspection" class="driver-car-document" accept=".pdf" />
+              </div>
+              <div class="auth-field">
+                <label for="registerCarDocuments" data-i18n="register.carOther">Autres documents voiture</label>
+                <input type="file" id="registerCarDocuments" accept=".pdf" multiple />
+              </div>
+            </div>
+            <p class="auth-driver-note" data-i18n="register.driver.note">Tous les documents conducteur doivent etre en PDF. Vous pouvez ajouter plusieurs documents complementaires si necessaire.</p>
+          </div>
+
+          <button type="submit" class="auth-submit-btn" data-i18n="register.button">Creer mon compte</button>
+          <p class="auth-terms"><span data-i18n="register.terms">Deja inscrit ?</span> <a href="login.html" data-i18n="register.login.link">Se connecter</a></p>
+        </form>
+
+        <div id="registerMessage" class="message"></div>
+        <div class="auth-lang-row">
+          <button id="lang-en" onclick="setLanguage('en')">GB</button>
+          <button id="lang-fr" onclick="setLanguage('fr')">FR</button>
+          <button id="lang-ar" onclick="setLanguage('ar')">MA</button>
+        </div>
+      </div>
+    </section>
   </main>
+
+  <script src="js/translations.js"></script>
   <script src="js/main.js"></script>
   <script>
-    document.getElementById('registerRole').addEventListener('change', function() {
-      const role = this.value;
+    const roleSelect = document.getElementById('registerRole');
+    const roleCards = document.querySelectorAll('[data-role-card]');
+
+    const syncRoleFields = () => {
+      const role = roleSelect.value;
       const studentFields = document.getElementById('studentFields');
       const driverFields = document.getElementById('driverFields');
       const scholarshipCard = document.getElementById('registerScholarshipCard');
+      const idCardPdf = document.getElementById('registerIdCardPdf');
+      const bankAccountNumber = document.getElementById('registerBankAccountNumber');
       const drivingLicence = document.getElementById('registerDrivingLicence');
+      const carDocumentInputs = document.querySelectorAll('.driver-car-document');
       const carDocuments = document.getElementById('registerCarDocuments');
+      const speciality = document.getElementById('registerSpeciality');
+      const idCardNumber = document.getElementById('registerIdCardNumber');
+
+      roleCards.forEach((card) => {
+        const selected = card.dataset.roleCard === role;
+        card.classList.toggle('selected', selected);
+        const radio = card.querySelector('input');
+        if (radio) radio.checked = selected;
+      });
 
       if (role === 'student') {
         studentFields.style.display = 'block';
         driverFields.style.display = 'none';
         scholarshipCard.required = true;
+        idCardPdf.required = true;
+        bankAccountNumber.required = false;
         drivingLicence.required = false;
+        carDocumentInputs.forEach((input) => {
+          input.required = false;
+        });
         carDocuments.required = false;
-      } else if (role === 'driver') {
+        speciality.required = true;
+        idCardNumber.required = true;
+      } else {
         studentFields.style.display = 'none';
-        driverFields.style.display = 'block';
+        driverFields.style.display = 'grid';
         scholarshipCard.required = true;
+        idCardPdf.required = true;
+        bankAccountNumber.required = true;
         drivingLicence.required = true;
-        carDocuments.required = true;
+        carDocumentInputs.forEach((input) => {
+          input.required = true;
+        });
+        carDocuments.required = false;
+        speciality.required = true;
+        idCardNumber.required = true;
       }
+    };
+
+    roleCards.forEach((card) => {
+      card.addEventListener('click', () => {
+        roleSelect.value = card.dataset.roleCard;
+        syncRoleFields();
+      });
     });
+    roleSelect.addEventListener('change', syncRoleFields);
+    syncRoleFields();
   </script>
 </body>
 </html>

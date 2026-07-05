@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Go Student | Admin Documents</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="go-student-layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">GS</div>
+      <div>
+        <h1>Go Student</h1>
+        <p>Admin panel</p>
+      </div>
+    </div>
+    <nav class="side-nav">
+      <a href="index.html" class="nav-item">Accueil</a>
+      <a href="admin-dashboard.html" class="nav-item">Admin Dashboard</a>
+      <a href="admin-wallet.html" class="nav-item">Admin Wallet</a>
+      <a href="admin-documents.html" class="nav-item is-active">Documents & Validation</a>
+      <a href="admin-users.html" class="nav-item">Users Table</a>
+      <a href="receipt.html" class="nav-item">Reçu</a>
+      <a href="#" id="logoutNav" class="nav-item">Deconnexion</a>
+    </nav>
+    <div class="sidebar-user">
+      <div class="avatar-chip">AD</div>
+      <div>
+        <strong>Admin</strong>
+        <p>Go Student</p>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="main-header">
+      <div>
+        <h2>Documents & Validation</h2>
+        <p id="adminInfo">Loading admin profile...</p>
+      </div>
+      <div class="header-actions admin-actions">
+        <a href="admin-dashboard.html" class="btn btn-secondary">Dashboard</a>
+        <a href="admin-wallet.html" class="btn btn-secondary">Wallet</a>
+        <a href="admin-users.html" class="btn btn-secondary">Users</a>
+        <button id="logoutButton" class="btn btn-secondary">Logout</button>
+      </div>
+    </header>
+
+    <section id="documentsValidationSection" class="card wallet-history-card">
+      <h3>Documents and Accounts Validation</h3>
+      <div id="adminPendingDocs" class="history-list">
+        <p class="small-text">Loading documents...</p>
+      </div>
+      <div id="adminUsersMessage" class="message"></div>
+    </section>
+  </main>
+  <script src="js/main.js"></script>
+</body>
+</html>

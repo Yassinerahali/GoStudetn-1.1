@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Go Student | Admin Users</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="go-student-layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">GS</div>
+      <div>
+        <h1>Go Student</h1>
+        <p>Admin panel</p>
+      </div>
+    </div>
+    <nav class="side-nav">
+      <a href="index.html" class="nav-item">Accueil</a>
+      <a href="admin-dashboard.html" class="nav-item">Admin Dashboard</a>
+      <a href="admin-wallet.html" class="nav-item">Admin Wallet</a>
+      <a href="admin-documents.html" class="nav-item">Documents & Validation</a>
+      <a href="admin-users.html" class="nav-item is-active">Users Table</a>
+      <a href="receipt.html" class="nav-item">Reçu</a>
+      <a href="#" id="logoutNav" class="nav-item">Deconnexion</a>
+    </nav>
+    <div class="sidebar-user">
+      <div class="avatar-chip">AD</div>
+      <div>
+        <strong>Admin</strong>
+        <p>Go Student</p>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="main-header">
+      <div>
+        <h2>Users Table</h2>
+        <p id="adminInfo">Loading admin profile...</p>
+      </div>
+      <div class="header-actions admin-actions">
+        <button id="approveExistingUsersButton" class="btn btn-secondary" type="button">Approve Existing Users</button>
+        <a href="admin-dashboard.html" class="btn btn-secondary">Dashboard</a>
+        <a href="admin-wallet.html" class="btn btn-secondary">Wallet</a>
+        <a href="admin-documents.html" class="btn btn-secondary">Documents</a>
+        <button id="logoutButton" class="btn btn-secondary">Logout</button>
+      </div>
+    </header>
+
+    <section id="usersTableSection" class="card wallet-history-card">
+      <h3>Users Table</h3>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Email</th>
+              <th>Password</th>
+              <th>Sexe</th>
+              <th>Role</th>
+              <th>Balance</th>
+              <th>Spent (Student)</th>
+              <th>Withdrawn (Driver)</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="adminUsersTableBody">
+            <tr><td colspan="11">Loading users...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div id="adminUsersMessage" class="message"></div>
+    </section>
+  </main>
+  <script src="js/main.js"></script>
+</body>
+</html>

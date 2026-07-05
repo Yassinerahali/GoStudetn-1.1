@@ -12,16 +12,24 @@
       <div class="dashboard-header">
         <h1>Driver Dashboard</h1>
         <div class="header-actions">
+          <button id="driverNotificationsToggle" type="button" class="btn btn-secondary notification-btn">
+            Notifications <span id="driverNotificationsBadge" class="notification-badge">0</span>
+          </button>
           <a href="index.html" class="btn btn-secondary">Home</a>
           <button id="logoutButton" class="btn btn-secondary">Logout</button>
         </div>
       </div>
+      <div id="driverNotificationsPanel" class="notification-panel"></div>
       <div id="driverInfo" class="info-box"></div>
       <h2>Create a New Trip</h2>
       <form id="tripForm" class="dashboard-form">
         <div class="row gap">
-          <input type="text" id="departureCity" placeholder="Departure city" required />
-          <input type="text" id="destinationCity" placeholder="Destination city" required />
+          <select id="departureCity" required>
+            <option value="">Departure city</option>
+          </select>
+          <select id="destinationCity" required>
+            <option value="">Destination city</option>
+          </select>
         </div>
         <div class="row gap">
           <input type="date" id="departureDate" required />
@@ -32,11 +40,28 @@
           <input type="number" id="tripSeats" placeholder="Seats available" min="1" required />
         </div>
         <textarea id="tripDescription" rows="3" placeholder="Optional notes"></textarea>
+        <label class="return-trip-toggle">
+          <input type="checkbox" id="enableReturnTrip" />
+          Publish go and back trip
+        </label>
+        <div id="returnTripFields" class="return-trip-box" style="display: none;">
+          <h3>Back Trip Setup</h3>
+          <div class="row gap">
+            <input type="date" id="returnDate" />
+            <input type="time" id="returnTime" />
+          </div>
+          <div class="row gap">
+            <input type="number" id="returnPrice" placeholder="Return trip price" min="0" />
+            <input type="number" id="returnSeats" placeholder="Return seats available" min="1" />
+          </div>
+          <textarea id="returnDescription" rows="3" placeholder="Return trip notes (optional)"></textarea>
+          <p class="small-text">Back trip will be created as a separate card: destination -> departure.</p>
+        </div>
         <button type="submit" class="btn btn-primary">Publish Trip</button>
       </form>
       <div id="driverMessage" class="message"></div>
       <h2>Wallet Driver</h2>
-      <p id="driverWalletBalance" class="profile-pill">Solde du portefeuille : 0 MAD</p>
+      <p id="driverWalletBalance" class="profile-pill">Disponible: 0.00 MAD | En attente: 0.00 MAD</p>
       <form id="withdrawForm" class="dashboard-form">
         <div class="row gap">
           <input type="number" id="withdrawAmount" placeholder="Montant a retirer (MAD)" min="1" step="1" required />
@@ -56,6 +81,7 @@
       <div id="driverBookings" class="card-grid"></div>
     </section>
   </main>
+  <script src="js/morocco-map.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

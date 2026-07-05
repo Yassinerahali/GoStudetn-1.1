@@ -1,26 +1,112 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login | Ride Sharing</title>
+  <title>GoStudent | Connexion</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
-<body>
-  <main class="container auth-page">
-    <div class="auth-card">
-      <h1>Login</h1>
-      <form id="loginForm">
-        <label>Email</label>
-        <input type="email" id="loginEmail" required />
-        <label>Password</label>
-        <input type="password" id="loginPassword" required />
-        <button type="submit" class="btn btn-primary">Sign in</button>
-        <p class="small-text">New here? <a href="register.html">Create an account</a></p>
-      </form>
-      <div id="loginMessage" class="message"></div>
-    </div>
+<body class="auth-split-page">
+  <main class="auth-shell">
+    <section class="auth-left-panel">
+      <div class="auth-panel-content">
+        <a href="index.html" class="auth-logo-wrap" aria-label="GoStudent accueil">
+          <img src="assets/gostudent-auth-logo.png" alt="GoStudent" />
+        </a>
+        <div class="auth-panel-headline">
+          <h1 data-i18n="auth.hero.title">Voyagez.
+Economisez.
+Reussissez.</h1>
+          <p data-i18n="auth.hero.subtitle">Rejoignez des milliers d'etudiants qui voyagent malin a travers le Maroc.</p>
+        </div>
+        <div class="auth-features">
+          <div class="auth-feature-item">
+            <span class="auth-feat-icon">↔</span>
+            <div>
+              <strong data-i18n="auth.feature.routes.title">Trajets partages</strong>
+              <span data-i18n="auth.feature.routes.text">Trouvez ou proposez un trajet</span>
+            </div>
+          </div>
+          <div class="auth-feature-item">
+            <span class="auth-feat-icon">DH</span>
+            <div>
+              <strong data-i18n="auth.feature.savings.title">Economisez jusqu'a 70%</strong>
+              <span data-i18n="auth.feature.savings.text">Frais de voyage reduits</span>
+            </div>
+          </div>
+          <div class="auth-feature-item">
+            <span class="auth-feat-icon">✓</span>
+            <div>
+              <strong data-i18n="auth.feature.safe.title">Voyages securises</strong>
+              <span data-i18n="auth.feature.safe.text">Profils verifies et notes</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="auth-right-panel">
+      <div class="auth-form-box">
+        <div class="auth-tabs">
+          <a class="auth-tab active" href="login.html" data-i18n="nav.login">Connexion</a>
+          <a class="auth-tab" href="register.html" data-i18n="nav.register">Inscription</a>
+        </div>
+
+        <div class="auth-form-heading">
+          <h2 data-i18n="login.heading">Bon retour</h2>
+          <p data-i18n="login.subheading">Connectez-vous a votre compte GoStudent</p>
+        </div>
+
+        <form id="loginForm" class="auth-modern-form">
+          <div class="auth-field">
+            <label for="loginEmail" data-i18n="login.email.label">Adresse email</label>
+            <div class="auth-input-wrap">
+              <span class="auth-input-icon">@</span>
+              <input type="email" id="loginEmail" placeholder="votre@email.com" data-i18n-placeholder="login.email.placeholder" required />
+            </div>
+          </div>
+
+          <div class="auth-field">
+            <label for="loginPassword" data-i18n="login.password">Mot de passe</label>
+            <div class="auth-input-wrap">
+              <span class="auth-input-icon">#</span>
+              <input type="password" id="loginPassword" placeholder="Mot de passe" data-i18n-placeholder="login.password.placeholder" required />
+              <button class="auth-eye-btn" type="button" data-toggle-password="loginPassword" data-i18n="login.show">Voir</button>
+            </div>
+          </div>
+
+          <div class="auth-options-row">
+            <label class="auth-remember">
+              <input type="checkbox" />
+              <span data-i18n="login.remember">Se souvenir de moi</span>
+            </label>
+            <a href="forgot-password.html" class="auth-forgot-link" data-i18n="login.forgot">Mot de passe oublie ?</a>
+          </div>
+
+          <button type="submit" class="auth-submit-btn" data-i18n="login.button">Se connecter</button>
+          <p class="auth-terms"><span data-i18n="login.terms">Nouveau ici ?</span> <a href="register.html" data-i18n="login.create">Creer un compte</a></p>
+        </form>
+
+        <div id="loginMessage" class="message"></div>
+        <div class="auth-lang-row">
+          <button id="lang-en" onclick="setLanguage('en')">GB</button>
+          <button id="lang-fr" onclick="setLanguage('fr')">FR</button>
+          <button id="lang-ar" onclick="setLanguage('ar')">MA</button>
+        </div>
+      </div>
+    </section>
   </main>
+
+  <script src="js/translations.js"></script>
   <script src="js/main.js"></script>
+  <script>
+    document.querySelector('[data-toggle-password="loginPassword"]')?.addEventListener('click', function () {
+      const input = document.getElementById('loginPassword');
+      input.type = input.type === 'password' ? 'text' : 'password';
+      const key = input.type === 'password' ? 'login.show' : 'login.hide';
+      this.dataset.i18n = key;
+      this.textContent = translations?.[currentLang]?.[key] || (input.type === 'password' ? 'Voir' : 'Masquer');
+    });
+  </script>
 </body>
 </html>
