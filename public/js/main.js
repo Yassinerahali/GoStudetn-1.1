@@ -960,6 +960,7 @@ const updateSidebarUser = () => {
   const logoutNav = document.getElementById('logoutNav');
   const walletNav = document.querySelector('a[href="wallet.html"]');
   const adminNav = document.getElementById('adminNav');
+  const homeNav = document.querySelector('.side-nav a[href="index.html"]');
 
   if (!user) {
     if (sidebarUser) {
@@ -980,6 +981,7 @@ const updateSidebarUser = () => {
     }
     if (walletNav) walletNav.style.display = 'none';
     if (adminNav) adminNav.style.display = 'none';
+    if (homeNav) homeNav.href = 'index.html';
     return;
   }
 
@@ -1007,6 +1009,13 @@ const updateSidebarUser = () => {
   }
   if (walletNav) walletNav.style.display = ['student', 'driver'].includes(user.role) ? 'block' : 'none';
   if (adminNav) adminNav.style.display = user.role === 'admin' ? 'block' : 'none';
+  if (homeNav) {
+    homeNav.href = user.role === 'driver'
+      ? 'driver-dashboard.html'
+      : user.role === 'student'
+        ? 'student-dashboard.html'
+        : 'index.html';
+  }
 };
 
 const fetchTrips = async () => {
@@ -3078,6 +3087,7 @@ const attachPageHandlers = () => {
       loadProfilePage();
       break;
     case 'student-dashboard.html':
+      updateSidebarUser();
       document.getElementById('filterButton')?.addEventListener('click', fetchTrips);
       document.getElementById('destinationFilter')?.addEventListener('input', fetchTrips);
       document.getElementById('dateFilter')?.addEventListener('change', fetchTrips);
@@ -3093,6 +3103,7 @@ const attachPageHandlers = () => {
       loadWalletPage();
       break;
     case 'driver-dashboard.html':
+      updateSidebarUser();
       loadDriverDashboard();
       break;
     case 'admin-dashboard.html':
