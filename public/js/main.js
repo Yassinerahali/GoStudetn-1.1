@@ -290,6 +290,135 @@ const redeemLoyaltyReward = async (rewardId) => {
   return payload;
 };
 
+const fetchLoyaltyRedemptions = async () => {
+  const response = await fetch(`${apiBase}/auth/loyalty/redemptions`, { headers: authHeaders() });
+  const payload = await parseResponseBody(response);
+  if (!response.ok) {
+    throw new Error(payload.message || 'Unable to load loyalty gifts.');
+  }
+  return Array.isArray(payload.redemptions) ? payload.redemptions : [];
+};
+
+const useLoyaltyGift = async (redemptionId) => {
+  const response = await fetch(`${apiBase}/auth/loyalty/redemptions/${redemptionId}/use`, {
+    method: 'POST',
+    headers: authHeaders(),
+  });
+  const payload = await parseResponseBody(response);
+  if (!response.ok) {
+    throw new Error(payload.message || 'Unable to use this gift.');
+  }
+  return payload;
+};
+
+const buildQrImageUrl = (payload) =>
+  `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(payload)}`;
+
+const renderLoyaltyWalletSection = (redemptions) => {
+  const section = document.getElementById('loyaltyFidelitySection');
+  const inventoryContainer = document.getElementById('loyaltyGiftsInventory');
+  const historyContainer = document.getElementById('loyaltyRedemptionsHistory');
+  if (!section || !inventoryContainer || !historyContainer) return;
+
+  section.style.display = 'block';
+
+  const items = Array.isArray(redemptions) ? redemptions : [];
+  const availableGifts = items.filter((item) => !item.used);
+
+  if (!availableGifts.length) {
+    inventoryContainer.innerHTML = '<p class="loyalty-gift-empty">Aucun cadeau disponible pour le moment. Gagnez des points depuis votre tableau de bord.</p>';
+  } else {
+    inventoryContainer.innerHTML = availableGifts
+      .map((gift) => {
+        const isFreeRide = gift.rewardId === 'free_trip';
+        const dateLabel = gift.redeemedAt ? new Date(gift.redeemedAt).toLocaleDateString('fr-FR') : '';
+        const helperText = isFreeRide
+          ? 'Ce cadeau s\'applique automatiquement comme mode de paiement lors de votre prochaine réservation.'
+          : 'Générez un QR code à présenter à la cafétéria universitaire.';
+        return `
+          <article class="loyalty-gift-card" data-redemption-id="${escapeHtml(gift._id)}" data-reward-id="${escapeHtml(gift.rewardId)}">
+            <span class="loyalty-gift-status is-ready">Prêt à utiliser</span>
+            <h4>${escapeHtml(gift.rewardName)}</h4>
+            <p class="small-text">${Number(gift.pointsCost || 0)} points - obtenu le ${dateLabel}</p>
+            <p class="small-text">${helperText}</p>
+            <button type="button" class="btn btn-primary loyalty-use-btn" data-redemption-id="${escapeHtml(gift._id)}">
+              ${isFreeRide ? 'Réserver un trajet' : 'Utiliser'}
+            </button>
+            <div class="loyalty-gift-qr-slot"></div>
+          </article>
+        `;
+      })
+      .join('');
+  }
+
+  if (!items.length) {
+    historyContainer.innerHTML = '<p class="small-text">Aucun cadeau échangé pour le moment.</p>';
+  } else {
+    historyContainer.innerHTML = items
+      .map((item) => {
+        const dateLabel = item.redeemedAt ? new Date(item.redeemedAt).toLocaleString('fr-FR') : 'Date inconnue';
+        const statusLabel = item.used
+          ? `Utilisé${item.usedAt ? ` le ${new Date(item.usedAt).toLocaleDateString('fr-FR')}` : ''}`
+          : 'Disponible';
+        return `
+          <article class="history-item">
+            <div class="history-item-head">
+              <span class="history-item-title">${escapeHtml(item.rewardName)}</span>
+              <span class="history-item-title history-amount-negative">-${Number(item.pointsCost || 0)} pts</span>
+            </div>
+            <p class="history-item-date">${dateLabel}</p>
+            <p class="history-item-meta">${statusLabel}</p>
+          </article>
+        `;
+      })
+      .join('');
+  }
+
+  inventoryContainer.querySelectorAll('.loyalty-use-btn').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const card = button.closest('.loyalty-gift-card');
+      const redemptionId = button.dataset.redemptionId;
+      const rewardId = card?.dataset.rewardId;
+
+      if (rewardId === 'free_trip') {
+        window.location.href = 'student-dashboard.html#findTrips';
+        return;
+      }
+
+      button.disabled = true;
+      button.textContent = 'Utilisation...';
+
+      try {
+        const result = await useLoyaltyGift(redemptionId);
+        showMessage('loyaltyGiftMessage', result.message || 'Cadeau utilisé.', false);
+
+        const qrSlot = card?.querySelector('.loyalty-gift-qr-slot');
+        const qrPayload = result.redemption?.qrPayload;
+        if (qrSlot && qrPayload) {
+          qrSlot.innerHTML = `
+            <div class="loyalty-gift-qr">
+              <img src="${buildQrImageUrl(qrPayload)}" alt="QR code du cadeau" />
+              <p>Présentez ce code à la cafétéria universitaire.</p>
+            </div>
+          `;
+        }
+
+        const statusBadge = card?.querySelector('.loyalty-gift-status');
+        if (statusBadge) {
+          statusBadge.textContent = 'Utilisé';
+          statusBadge.classList.remove('is-ready');
+          statusBadge.classList.add('is-used');
+        }
+        button.remove();
+      } catch (error) {
+        showMessage('loyaltyGiftMessage', error.message || 'Unable to use this gift.');
+        button.disabled = false;
+        button.textContent = 'Utiliser';
+      }
+    });
+  });
+};
+
 const renderLoyaltySection = (pointsPayload, rewardsPayload) => {
   const pointsText = document.getElementById('loyaltyPointsText');
   const motivation = document.getElementById('loyaltyMotivation');
@@ -1557,6 +1686,25 @@ const loadTripPage = async () => {
       }
     }
 
+    let freeRideAvailableCount = 0;
+    const freeRideOption = document.getElementById('freeRideOption');
+    const freeRideCount = document.getElementById('freeRideCount');
+    const currentUser = getUser();
+    if (freeRideOption && getToken() && currentUser?.role === 'student') {
+      try {
+        const redemptions = await fetchLoyaltyRedemptions();
+        freeRideAvailableCount = redemptions.filter((item) => item.rewardId === 'free_trip' && !item.used).length;
+        if (freeRideAvailableCount > 0) {
+          freeRideOption.style.display = 'flex';
+          if (freeRideCount) {
+            freeRideCount.textContent = `(${freeRideAvailableCount} disponible${freeRideAvailableCount > 1 ? 's' : ''})`;
+          }
+        }
+      } catch (loyaltyError) {
+        // Silently ignore: the free ride option simply stays hidden.
+      }
+    }
+
     document.getElementById('bookingForm')?.addEventListener('submit', async (evt) => {
       evt.preventDefault();
 
@@ -1564,6 +1712,16 @@ const loadTripPage = async () => {
       const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked')?.value || 'wallet';
       if (!getToken()) {
         showMessage('tripMessage', 'Login first to reserve a seat.');
+        return;
+      }
+
+      if (paymentMethod === 'free_ride' && seatsBooked !== 1) {
+        showMessage('tripMessage', 'Le trajet gratuit couvre une seule place. Reglez ce champ sur 1.');
+        return;
+      }
+
+      if (paymentMethod === 'free_ride' && freeRideAvailableCount < 1) {
+        showMessage('tripMessage', 'Aucun trajet gratuit disponible.');
         return;
       }
 
@@ -1601,7 +1759,8 @@ const loadTripPage = async () => {
           const loyaltyMsg = earned > 0
             ? ` You earned ${earned} Go Fidélité point${earned > 1 ? 's' : ''}.`
             : '';
-          showMessage('tripMessage', `Booking confirmed and request sent to driver.${loyaltyMsg}`, false);
+          const freeRideMsg = paymentMethod === 'free_ride' ? ' Votre trajet gratuit Go Fidélité a été utilisé.' : '';
+          showMessage('tripMessage', `Booking confirmed and request sent to driver.${freeRideMsg}${loyaltyMsg}`, false);
 
           if (data.booking?._id && data.receiptGenerated) {
             window.location.href = `receipt.html?bookingId=${data.booking._id}`;
@@ -1672,6 +1831,12 @@ const loadWalletPage = async () => {
   await renderPaymentHistory();
   if (isStudent) {
     document.getElementById('walletTopUpForm')?.addEventListener('submit', handleWalletTopUp);
+    try {
+      const redemptions = await fetchLoyaltyRedemptions();
+      renderLoyaltyWalletSection(redemptions);
+    } catch (loyaltyError) {
+      showMessage('loyaltyGiftMessage', loyaltyError.message || 'Unable to load Go Fidélité.');
+    }
   }
   if (isDriver) {
     document.getElementById('withdrawForm')?.addEventListener('submit', handleDriverWithdraw);
@@ -3124,6 +3289,38 @@ const attachPageHandlers = () => {
   }
 };
 
+const initSidebarToggle = () => {
+  const toggleBtn = document.getElementById('sidebarToggle');
+  const reopenBtn = document.getElementById('sidebarReopen');
+  const backdrop = document.getElementById('sidebarBackdrop');
+  if (!toggleBtn && !reopenBtn) return;
+
+  const STORAGE_KEY = 'goStudentSidebarCollapsed';
+  const isDrawerPage = document.body.classList.contains('sidebar-drawer-page');
+
+  const setCollapsed = (collapsed) => {
+    document.body.classList.toggle('sidebar-collapsed', collapsed);
+    if (!isDrawerPage) {
+      localStorage.setItem(STORAGE_KEY, collapsed ? 'on' : 'off');
+    }
+  };
+
+  if (!isDrawerPage && localStorage.getItem(STORAGE_KEY) === 'on') {
+    setCollapsed(true);
+  }
+
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', () => setCollapsed(true));
+  }
+  if (reopenBtn) {
+    reopenBtn.addEventListener('click', () => setCollapsed(false));
+  }
+  if (backdrop) {
+    backdrop.addEventListener('click', () => setCollapsed(true));
+  }
+};
+
 attachPageHandlers();
 translatePage();
 setLanguage(currentLang);
+initSidebarToggle();

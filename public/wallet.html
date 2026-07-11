@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -7,6 +7,13 @@
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body class="go-student-layout">
+<button id="sidebarReopen" type="button" class="sidebar-reopen-btn" aria-label="Afficher le menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </button>
   <aside class="sidebar">
     <div class="brand">
       <div class="brand-mark">GS</div>
@@ -14,6 +21,13 @@
         <h1>Go Student</h1>
         <p>Covoiturage etudiant</p>
       </div>
+      <button id="sidebarToggle" type="button" class="sidebar-toggle-btn" aria-label="Réduire le menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
     </div>
     <nav class="side-nav">
       <a href="index.html" class="nav-item">Accueil</a>
@@ -111,6 +125,27 @@
       <h3>Historique paiements et reservations</h3>
       <div id="paymentHistoryList" class="history-list">
         <p class="small-text">Chargement de l'historique...</p>
+      </div>
+    </section>
+
+    <section id="loyaltyFidelitySection" class="card wallet-history-card" style="display: none;">
+      <h3>Go Fidélité</h3>
+      <p class="small-text">Vos cadeaux gagnés grâce à vos points, prêts à être utilisés.</p>
+
+      <div class="loyalty-wallet-block">
+        <h4>Mes cadeaux disponibles</h4>
+        <div id="loyaltyGiftsInventory" class="loyalty-gifts-grid">
+          <p class="small-text">Chargement de vos cadeaux...</p>
+        </div>
+      </div>
+
+      <div id="loyaltyGiftMessage" class="message"></div>
+
+      <div class="loyalty-wallet-block">
+        <h4>Historique des points dépensés</h4>
+        <div id="loyaltyRedemptionsHistory" class="history-list">
+          <p class="small-text">Chargement de l'historique...</p>
+        </div>
       </div>
     </section>
   </main>

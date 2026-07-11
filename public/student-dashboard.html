@@ -7,6 +7,13 @@
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body class="go-student-layout">
+<button id="sidebarReopen" type="button" class="sidebar-reopen-btn" aria-label="Afficher le menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </button>
   <aside class="sidebar">
     <div class="brand">
       <div class="brand-mark">GS</div>
@@ -14,6 +21,13 @@
         <h1 data-i18n="brand.h1">Go Student</h1>
         <p data-i18n="brand.p">Covoiturage etudiant</p>
       </div>
+      <button id="sidebarToggle" type="button" class="sidebar-toggle-btn" aria-label="Réduire le menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
     </div>
     <nav class="side-nav">
       <a href="index.html" class="nav-item" data-i18n="nav.home">Accueil</a>
@@ -62,6 +76,7 @@
         </div>
         <label class="switch-wrap">
           <input type="checkbox" id="pinkModeToggle" />
+          <span class="switch-track"><span class="switch-thumb"></span></span>
           Pink Option
         </label>
       </div>

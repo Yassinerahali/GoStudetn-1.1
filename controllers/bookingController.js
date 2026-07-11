@@ -92,6 +92,36 @@ exports.createBooking = async (req, res) => {
     let walletBalanceAfterPayment = student.walletBalance || 0;
     const currentLoyaltyDhProgress = Number(student.loyaltyDhProgress || 0);
     const currentLoyaltyPoints = Number(student.loyaltyPoints || 0);
+    let usedFreeRideRedemptionId = null;
+
+    if (paymentMethod === 'free_ride') {
+      if (parsedSeatsBooked !== 1) {
+        return res.status(400).json({ message: 'The free ride reward covers a single seat only.' });
+      }
+
+      const candidate = await User.findOne(
+        { _id: authUserId, loyaltyRedemptions: { $elemMatch: { rewardId: 'free_trip', used: false } } },
+        { 'loyaltyRedemptions.$': 1 }
+      );
+
+      if (!candidate || !candidate.loyaltyRedemptions?.length) {
+        return res.status(400).json({ message: 'No available free ride reward.' });
+      }
+
+      const redemptionId = candidate.loyaltyRedemptions[0]._id;
+
+      const markedUsed = await User.findOneAndUpdate(
+        { _id: authUserId, 'loyaltyRedemptions._id': redemptionId, 'loyaltyRedemptions.used': false },
+        { $set: { 'loyaltyRedemptions.$.used': true, 'loyaltyRedemptions.$.usedAt': new Date() } },
+        { new: true }
+      );
+
+      if (!markedUsed) {
+        return res.status(400).json({ message: 'No available free ride reward.' });
+      }
+
+      usedFreeRideRedemptionId = redemptionId;
+    }
 
     if (paymentMethod === 'wallet') {
       if (student.walletBalance < totalPrice) {
@@ -120,23 +150,33 @@ exports.createBooking = async (req, res) => {
       if (paymentMethod === 'wallet') {
         await User.findByIdAndUpdate(authUserId, { $inc: { walletBalance: totalPrice } });
       }
+      if (paymentMethod === 'free_ride' && usedFreeRideRedemptionId) {
+        await User.findOneAndUpdate(
+          { _id: authUserId, 'loyaltyRedemptions._id': usedFreeRideRedemptionId },
+          { $set: { 'loyaltyRedemptions.$.used': false, 'loyaltyRedemptions.$.usedAt': null } }
+        );
+      }
       return res.status(400).json({ message: 'Not enough seats available.' });
     }
+
+    const isFreeRide = paymentMethod === 'free_ride';
 
     const booking = new Booking({
       student: authUserId,
       trip: updatedTrip._id,
       seatsBooked: parsedSeatsBooked,
       paymentMethod,
-      amountPaid: totalPrice,
+      amountPaid: isFreeRide ? 0 : totalPrice,
       walletBalanceAfter: paymentMethod === 'wallet' ? walletBalanceAfterPayment : undefined,
       studentComment: normalizedComment,
     });
     await booking.save();
 
-    const loyaltyTotalDh = currentLoyaltyDhProgress + totalPrice;
-    const loyaltyEarnedPoints = Math.floor(loyaltyTotalDh / LOYALTY_DH_PER_POINT);
-    const nextLoyaltyDhProgress = Number((loyaltyTotalDh % LOYALTY_DH_PER_POINT).toFixed(2));
+    const loyaltyTotalDh = isFreeRide ? currentLoyaltyDhProgress : currentLoyaltyDhProgress + totalPrice;
+    const loyaltyEarnedPoints = isFreeRide ? 0 : Math.floor(loyaltyTotalDh / LOYALTY_DH_PER_POINT);
+    const nextLoyaltyDhProgress = isFreeRide
+      ? currentLoyaltyDhProgress
+      : Number((loyaltyTotalDh % LOYALTY_DH_PER_POINT).toFixed(2));
     const nextLoyaltyPoints = currentLoyaltyPoints + loyaltyEarnedPoints;
 
     await User.findByIdAndUpdate(authUserId, {
@@ -177,7 +217,7 @@ exports.createBooking = async (req, res) => {
         tripTime: updatedTrip.departureTime || '--:--',
         vehicleType: vehicleType || 'Vehicle not specified',
         reservedSeats: parsedSeatsBooked,
-        pricePaid: totalPrice,
+        pricePaid: isFreeRide ? 0 : totalPrice,
         paymentMethod,
         loyaltyPointsEarned: loyaltyEarnedPoints,
         bookingStatus: booking.confirmed ? 'Confirmed' : 'Pending',

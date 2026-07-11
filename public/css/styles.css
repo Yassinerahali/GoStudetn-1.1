@@ -218,12 +218,58 @@ button {
   gap: 0.6rem;
   font-weight: 700;
   color: var(--muted);
+  cursor: pointer;
 }
 
 .switch-wrap input {
-  width: 44px;
-  height: 24px;
-  accent-color: var(--primary);
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.switch-wrap .switch-track {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+  width: 51px;
+  height: 31px;
+  border-radius: 999px;
+  background: #e2e4ea;
+  transition: background 0.2s ease;
+}
+
+.switch-wrap .switch-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 27px;
+  height: 27px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18), 0 0 0 0.5px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+}
+
+.switch-wrap input:checked + .switch-track {
+  background: var(--pink, #ef5bb8);
+}
+
+.switch-wrap input:checked + .switch-track .switch-thumb {
+  transform: translateX(20px);
+}
+
+.switch-wrap input:focus-visible + .switch-track {
+  box-shadow: 0 0 0 3px rgba(77, 110, 245, 0.35);
+}
+
+body.dark-mode .switch-wrap .switch-track {
+  background: #4b5160;
 }
 
 .extra-filters {
@@ -2200,6 +2246,7 @@ body.profile-page .sidebar {
   flex-direction: column;
   gap: 0;
   z-index: 10;
+  transition: transform 0.28s ease;
 }
 
 .brand {
@@ -2208,6 +2255,129 @@ body.profile-page .sidebar {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.sidebar-toggle-btn {
+  margin-left: auto;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.sidebar-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.sidebar-toggle-btn svg {
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+}
+
+/* Floating button that reappears once the sidebar is collapsed */
+.sidebar-reopen-btn {
+  position: fixed;
+  top: 26px;
+  left: 22px;
+  z-index: 40;
+  width: 42px;
+  height: 42px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  color: var(--blue);
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.14);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.sidebar-reopen-btn:hover {
+  background: rgba(255, 255, 255, 0.38);
+}
+
+body.dark-mode .sidebar-reopen-btn {
+  background: rgba(30, 41, 59, 0.35);
+  border-color: rgba(255, 255, 255, 0.14);
+  color: #e5e7eb;
+}
+
+body.dark-mode .sidebar-reopen-btn:hover {
+  background: rgba(30, 41, 59, 0.55);
+}
+
+.sidebar-reopen-btn svg {
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+}
+
+body.sidebar-collapsed .sidebar {
+  transform: translateX(-100%);
+}
+
+body.sidebar-collapsed .main-content {
+  margin-left: 0;
+}
+
+body.sidebar-collapsed .main-header {
+  padding-left: 68px;
+}
+
+body.sidebar-drawer-page.sidebar-collapsed .container {
+  padding-left: 68px;
+}
+
+body.sidebar-collapsed .sidebar-reopen-btn {
+  display: flex;
+}
+
+/* Drawer mode: used on pages that don't have a permanent sidebar layout
+   (driver-dashboard.html, trip.html). The sidebar opens as an overlay on
+   top of the existing centered content instead of pushing it. */
+body.sidebar-drawer-page .sidebar {
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9;
+  background: rgba(10, 15, 35, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+body.sidebar-drawer-page:not(.sidebar-collapsed) .sidebar-backdrop {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+@media (max-width: 950px) {
+  /* Sidebar already stacks on top of content on small screens, so the
+     slide-collapse behavior is disabled there. */
+  .sidebar-toggle-btn,
+  .sidebar-reopen-btn {
+    display: none !important;
+  }
+
+  body.sidebar-collapsed .sidebar {
+    transform: none;
+  }
 }
 
 .brand-mark {
@@ -2339,6 +2509,7 @@ body.profile-page .nav-item.is-active {
   margin-left: var(--sidebar-w);
   min-height: 100vh;
   padding: 36px 40px;
+  transition: margin-left 0.28s ease;
 }
 
 .main-header,
@@ -3600,4 +3771,87 @@ body.option-pink .profile-info-row .status-pill {
 body.option-pink .admin-status-badge.scheduled {
   border-color: var(--blue);
   background: rgba(233, 30, 140, 0.15);
+}
+
+.loyalty-wallet-block {
+  margin-top: 1.4rem;
+}
+
+.loyalty-wallet-block h4 {
+  font-size: 1rem;
+  margin-bottom: 0.6rem;
+}
+
+.loyalty-gifts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.8rem;
+}
+
+.loyalty-gift-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+
+.loyalty-gift-card h4 {
+  font-size: 0.98rem;
+}
+
+.loyalty-gift-card p {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.loyalty-gift-status {
+  display: inline-block;
+  align-self: flex-start;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-pill, 50px);
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.loyalty-gift-status.is-ready {
+  background: var(--blue-light);
+  color: var(--blue);
+}
+
+.loyalty-gift-status.is-used {
+  background: var(--surface-soft);
+  color: var(--muted);
+}
+
+.loyalty-gift-qr {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.8rem;
+  border-radius: var(--radius-sm);
+  background: var(--surface-soft);
+}
+
+.loyalty-gift-qr img {
+  width: 150px;
+  height: 150px;
+  border-radius: 8px;
+  background: #fff;
+  padding: 6px;
+}
+
+.loyalty-gift-qr p {
+  font-size: 0.78rem;
+  text-align: center;
+  word-break: break-all;
+}
+
+.loyalty-gift-empty {
+  color: var(--muted);
+  font-size: 0.9rem;
 }

@@ -6,7 +6,48 @@
   <title>Book Trip | Ride Sharing</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
-<body>
+<body class="sidebar-drawer-page sidebar-collapsed">
+  <button id="sidebarReopen" type="button" class="sidebar-reopen-btn" aria-label="Afficher le menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </button>
+  <div id="sidebarBackdrop" class="sidebar-backdrop"></div>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">GS</div>
+      <div>
+        <h1>Go Student</h1>
+        <p>Covoiturage etudiant</p>
+      </div>
+      <button id="sidebarToggle" type="button" class="sidebar-toggle-btn" aria-label="Réduire le menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <nav class="side-nav">
+      <a href="index.html" class="nav-item">Accueil</a>
+      <a href="student-dashboard.html" class="nav-item">Mes trajets</a>
+      <a href="profile.html" class="nav-item">Profil</a>
+      <a href="wallet.html" class="nav-item">Portefeuille</a>
+      <a href="receipt.html" class="nav-item">Reçu</a>
+      <a href="#" id="logoutNav" class="nav-item" style="display: none;">Deconnexion</a>
+      <a href="login.html" class="nav-item">Connexion</a>
+    </nav>
+    <div class="sidebar-user">
+      <div class="avatar-chip">ET</div>
+      <div>
+        <strong>Profil etudiant</strong>
+        <p>Go Student</p>
+      </div>
+    </div>
+  </aside>
+
   <main class="container booking-page">
     <section class="card">
       <h1>Trip Details</h1>
@@ -21,6 +62,9 @@
           <label><input type="radio" name="paymentMethod" value="wallet" checked /> Payer depuis le portefeuille</label>
           <label><input type="radio" name="paymentMethod" value="mastercard" /> Mastercard / Visa</label>
           <label><input type="radio" name="paymentMethod" value="paypal" /> PayPal</label>
+          <label id="freeRideOption" style="display: none;">
+            <input type="radio" name="paymentMethod" value="free_ride" /> Trajet gratuit (cadeau Go Fidélité) <span id="freeRideCount" class="small-text"></span>
+          </label>
         </div>
         <p id="walletStatus" class="small-text"></p>
         <button type="submit" class="btn btn-primary">Reserve Seat</button>

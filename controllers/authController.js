@@ -789,6 +789,76 @@ exports.redeemLoyaltyReward = async (req, res) => {
   }
 };
 
+exports.getLoyaltyRedemptions = async (req, res) => {
+  try {
+    const authUserId = resolveAuthUserId(req);
+    if (!authUserId) {
+      return res.status(401).json({ message: 'Unauthorized user context.' });
+    }
+    if (req.user.role !== 'student') {
+      return res.status(403).json({ message: 'Only students can access loyalty gifts.' });
+    }
+
+    const user = await User.findById(authUserId).select('loyaltyRedemptions');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    const redemptions = [...(user.loyaltyRedemptions || [])].sort(
+      (a, b) => new Date(b.redeemedAt || 0).getTime() - new Date(a.redeemedAt || 0).getTime()
+    );
+
+    res.json({ redemptions });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Unable to fetch loyalty gifts.' });
+  }
+};
+
+exports.useLoyaltyReward = async (req, res) => {
+  try {
+    const authUserId = resolveAuthUserId(req);
+    if (!authUserId) {
+      return res.status(401).json({ message: 'Unauthorized user context.' });
+    }
+    if (req.user.role !== 'student') {
+      return res.status(403).json({ message: 'Only students can use loyalty gifts.' });
+    }
+
+    const user = await User.findById(authUserId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    const redemption = user.loyaltyRedemptions.id(req.params.redemptionId);
+    if (!redemption) {
+      return res.status(404).json({ message: 'Gift not found.' });
+    }
+    if (redemption.used) {
+      return res.status(400).json({ message: 'This gift has already been used.' });
+    }
+    if (redemption.rewardId === 'free_trip') {
+      return res.status(400).json({
+        message: 'This gift is applied automatically as a payment method when you book a trip.',
+      });
+    }
+
+    const qrPayload = `GS-LOY-${redemption._id}-${Date.now().toString(36).toUpperCase()}`;
+    redemption.used = true;
+    redemption.usedAt = new Date();
+    redemption.qrPayload = qrPayload;
+    await user.save();
+
+    res.json({
+      message: `${redemption.rewardName} marked as used.`,
+      redemption,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Unable to use this loyalty gift.' });
+  }
+};
+
 exports.getAdminWalletHistory = async (req, res) => {
   try {
     if (!ensureAdminRequest(req, res)) return;

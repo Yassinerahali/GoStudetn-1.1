@@ -6,7 +6,48 @@
   <title>Driver Dashboard | Ride Sharing</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
-<body>
+<body class="sidebar-drawer-page sidebar-collapsed">
+  <button id="sidebarReopen" type="button" class="sidebar-reopen-btn" aria-label="Afficher le menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </button>
+  <div id="sidebarBackdrop" class="sidebar-backdrop"></div>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">GS</div>
+      <div>
+        <h1>Go Student</h1>
+        <p>Espace conducteur</p>
+      </div>
+      <button id="sidebarToggle" type="button" class="sidebar-toggle-btn" aria-label="Réduire le menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <nav class="side-nav">
+      <a href="index.html" class="nav-item">Accueil</a>
+      <a href="driver-dashboard.html" class="nav-item is-active">Tableau de bord</a>
+      <a href="profile.html" class="nav-item">Profil</a>
+      <a href="wallet.html" class="nav-item">Portefeuille</a>
+      <a href="receipt.html" class="nav-item">Reçu</a>
+      <a href="#" id="logoutNav" class="nav-item" style="display: none;">Deconnexion</a>
+      <a href="login.html" class="nav-item">Connexion</a>
+    </nav>
+    <div class="sidebar-user">
+      <div class="avatar-chip">CD</div>
+      <div>
+        <strong>Conducteur</strong>
+        <p>Go Student</p>
+      </div>
+    </div>
+  </aside>
+
   <main class="container dashboard-page">
     <section class="card">
       <div class="dashboard-header">
