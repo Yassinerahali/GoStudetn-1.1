@@ -54,6 +54,7 @@
         <p id="adminInfo">Loading admin profile...</p>
       </div>
       <div class="header-actions admin-actions">
+        <button id="downloadUsersCsvButton" class="btn btn-primary" type="button">Télécharger CSV</button>
         <button id="approveExistingUsersButton" class="btn btn-secondary" type="button">Approve Existing Users</button>
         <a href="admin-dashboard.html" class="btn btn-secondary">Dashboard</a>
         <a href="admin-wallet.html" class="btn btn-secondary">Wallet</a>
@@ -73,6 +74,8 @@
               <th>Email</th>
               <th>Password</th>
               <th>Sexe</th>
+              <th>Phone Number</th>
+              <th>ID Card Number</th>
               <th>Role</th>
               <th>Balance</th>
               <th>Spent (Student)</th>
@@ -82,7 +85,7 @@
             </tr>
           </thead>
           <tbody id="adminUsersTableBody">
-            <tr><td colspan="11">Loading users...</td></tr>
+            <tr><td colspan="13">Loading users...</td></tr>
           </tbody>
         </table>
       </div>

@@ -2957,12 +2957,74 @@ const renderAdminPendingDocs = (users) => {
     .join('');
 };
 
+const escapeCsvValue = (value) => {
+  const str = String(value ?? '');
+  if (/[",\n]/.test(str)) {
+    return `"${str.replace(/"/g, '""')}"`;
+  }
+  return str;
+};
+
+let adminUsersTableCache = [];
+
+const downloadAdminUsersCsv = (rows) => {
+  if (!rows.length) {
+    showMessage('adminUsersMessage', 'No users to export.');
+    return;
+  }
+
+  const headers = [
+    'First Name',
+    'Last Name',
+    'Email',
+    'Sexe',
+    'Phone Number',
+    'ID Card Number',
+    'Role',
+    'Balance (MAD)',
+    'Spent (MAD)',
+    'Withdrawn (MAD)',
+    'Status',
+  ];
+  const lines = [headers.join(',')];
+
+  rows.forEach((row) => {
+    const status = statusLabel(normalizeStatus(row.documentsValidationStatus, row.accountApproved));
+    const values = [
+      row.firstName || '',
+      row.lastName || '',
+      row.email || '',
+      row.sexe || '',
+      row.phoneNumber || '',
+      row.idCardNumber || '',
+      row.role || '',
+      Number(row.balance || 0).toFixed(2),
+      Number(row.amountSpent || 0).toFixed(2),
+      Number(row.amountWithdrawn || 0).toFixed(2),
+      row.suspended ? `${status} (Suspended)` : status,
+    ];
+    lines.push(values.map(escapeCsvValue).join(','));
+  });
+
+  const csvContent = lines.join('\r\n');
+  const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  const timestamp = new Date().toISOString().slice(0, 10);
+  link.href = url;
+  link.download = `gostudent-users-${timestamp}.csv`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+};
+
 const renderAdminUsersTable = (rows) => {
   const tbody = document.getElementById('adminUsersTableBody');
   if (!tbody) return;
 
   if (!rows.length) {
-    tbody.innerHTML = '<tr><td colspan="11">No users found.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="13">No users found.</td></tr>';
     return;
   }
 
@@ -2971,19 +3033,31 @@ const renderAdminUsersTable = (rows) => {
       const status = normalizeStatus(row.documentsValidationStatus, row.accountApproved);
       const statusBadgeClass = statusClassName(status);
       const statusText = statusLabel(status);
+      const isAdmin = row.role === 'admin';
+      const suspendLabel = row.suspended ? 'Reactivate' : 'Suspend';
+      const suspendClass = row.suspended ? 'btn-secondary' : 'btn-warning';
       return `
-      <tr class="status-row-${status}">
+      <tr class="status-row-${status}${row.suspended ? ' status-row-suspended' : ''}">
         <td><input type="text" data-field="firstName" data-user-id="${row.id}" value="${row.firstName || ''}" /></td>
         <td><input type="text" data-field="lastName" data-user-id="${row.id}" value="${row.lastName || ''}" /></td>
         <td><input type="email" data-field="email" data-user-id="${row.id}" value="${row.email || ''}" /></td>
         <td><input type="text" data-field="password" data-user-id="${row.id}" placeholder="New password" /></td>
         <td>${row.sexe || '-'}</td>
+        <td>${escapeHtml(row.phoneNumber || '-')}</td>
+        <td>${escapeHtml(row.idCardNumber || '-')}</td>
         <td>${row.role || '-'}</td>
         <td>${Number(row.balance || 0).toFixed(2)} MAD</td>
         <td>${Number(row.amountSpent || 0).toFixed(2)} MAD</td>
         <td>${Number(row.amountWithdrawn || 0).toFixed(2)} MAD</td>
-        <td><span class="${statusBadgeClass}">${statusText}</span>${status === 'rejected' && row.documentsRejectionReason ? `<p class="status-reason">${row.documentsRejectionReason}</p>` : ''}</td>
-        <td><button class="btn btn-secondary" data-action="save-user" data-user-id="${row.id}">Save</button></td>
+        <td>
+          <span class="${statusBadgeClass}">${statusText}</span>${status === 'rejected' && row.documentsRejectionReason ? `<p class="status-reason">${row.documentsRejectionReason}</p>` : ''}
+          ${row.suspended ? '<p class="status-suspended-badge">Suspendu</p>' : ''}
+        </td>
+        <td class="admin-table-actions">
+          <button class="btn btn-secondary" data-action="save-user" data-user-id="${row.id}">Save</button>
+          ${isAdmin ? '' : `<button class="btn ${suspendClass}" data-action="toggle-suspend-user" data-user-id="${row.id}" data-suspended="${row.suspended}">${suspendLabel}</button>`}
+          ${isAdmin ? '' : `<button class="btn btn-danger" data-action="delete-user" data-user-id="${row.id}">Delete</button>`}
+        </td>
       </tr>
     `;
     })
@@ -3081,6 +3155,63 @@ const bindAdminActions = () => {
       } catch (error) {
         showMessage('adminUsersMessage', 'Unable to update user.');
       }
+    }
+    if (target.dataset.action === 'toggle-suspend-user') {
+      const userId = target.dataset.userId;
+      const isCurrentlySuspended = target.dataset.suspended === 'true';
+
+      if (isCurrentlySuspended) {
+        if (!window.confirm('Reactivate this user\'s account?')) return;
+      } else if (!window.confirm('Suspend this user? They will not be able to log in until reactivated.')) {
+        return;
+      }
+
+      let reason = '';
+      if (!isCurrentlySuspended) {
+        reason = window.prompt('Optional: reason for suspension', '') || '';
+      }
+
+      try {
+        const response = await fetch(`${apiBase}/auth/admin/users/${userId}/suspend`, {
+          method: 'PATCH',
+          headers: authHeaders(),
+          body: JSON.stringify({ suspended: !isCurrentlySuspended, reason }),
+        });
+        const data = await parseResponseBody(response);
+        if (!response.ok) {
+          showMessage('adminUsersMessage', data.message || 'Unable to update suspension status.');
+          return;
+        }
+        showMessage('adminUsersMessage', data.message || 'Suspension status updated.', false);
+        await loadAdminUsersPage();
+      } catch (error) {
+        showMessage('adminUsersMessage', 'Unable to update suspension status.');
+      }
+      return;
+    }
+
+    if (target.dataset.action === 'delete-user') {
+      const userId = target.dataset.userId;
+      if (!window.confirm('Delete this user permanently? All of their trips, bookings, receipts and wallet history will also be deleted. This cannot be undone.')) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`${apiBase}/auth/admin/users/${userId}`, {
+          method: 'DELETE',
+          headers: authHeaders(),
+        });
+        const data = await parseResponseBody(response);
+        if (!response.ok) {
+          showMessage('adminUsersMessage', data.message || 'Unable to delete user.');
+          return;
+        }
+        showMessage('adminUsersMessage', data.message || 'User deleted.', false);
+        await loadAdminUsersPage();
+      } catch (error) {
+        showMessage('adminUsersMessage', 'Unable to delete user.');
+      }
+      return;
     }
   });
 };
@@ -3201,12 +3332,19 @@ const loadAdminUsersPage = async () => {
   bindAdminActions();
   bindApproveExistingUsersAction(loadAdminUsersPage);
 
+  const downloadButton = document.getElementById('downloadUsersCsvButton');
+  if (downloadButton && !downloadButton.dataset.bound) {
+    downloadButton.dataset.bound = 'true';
+    downloadButton.addEventListener('click', () => downloadAdminUsersCsv(adminUsersTableCache));
+  }
+
   try {
     const [summary, usersTable] = await Promise.all([
       fetchAdminSummary(),
       fetchAdminUsersTable(),
     ]);
     applyAdminSummaryToPage(summary);
+    adminUsersTableCache = usersTable;
     renderAdminUsersTable(usersTable);
   } catch (error) {
     showMessage('adminInfo', error.message || 'Unable to load users table.');

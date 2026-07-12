@@ -6,6 +6,8 @@ const WalletTransaction = require('../models/WalletTransaction');
 const WalletWithdrawal = require('../models/WalletWithdrawal');
 const Booking = require('../models/Booking');
 const Trip = require('../models/Trip');
+const Receipt = require('../models/Receipt');
+const Vehicle = require('../models/Vehicle');
 
 const ADMIN_EMAIL = 'admin@gostudent.ma';
 const ADMIN_PASSWORD = 'ABC123';
@@ -229,6 +231,14 @@ exports.login = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid credentials.' });
+    }
+
+    if (user.suspended) {
+      return res.status(403).json({
+        message: user.suspensionReason
+          ? `Your account has been suspended: ${user.suspensionReason}`
+          : 'Your account has been suspended. Please contact the administrator.',
+      });
     }
 
     const token = generateToken(user._id);
@@ -963,7 +973,7 @@ exports.getUsersTable = async (req, res) => {
 
     const users = await User.find({ role: { $in: USER_ROLES } })
       .select(
-        'firstName lastName name email password role gender walletBalance driverAvailableBalance driverHoldingBalance accountApproved documentsValidationStatus documentsRejectionReason createdAt'
+        'firstName lastName name email password role gender phoneNumber idCardNumber walletBalance driverAvailableBalance driverHoldingBalance accountApproved documentsValidationStatus documentsRejectionReason suspended suspensionReason createdAt'
       )
       .sort({ createdAt: -1 })
       .lean();
@@ -992,6 +1002,10 @@ exports.getUsersTable = async (req, res) => {
         passwordHash: user.password,
         role: user.role,
         sexe: user.gender || '-',
+        phoneNumber: user.phoneNumber || '',
+        idCardNumber: user.idCardNumber || '',
+        suspended: !!user.suspended,
+        suspensionReason: user.suspensionReason || '',
         balance: user.role === 'driver' ? getDriverAvailableBalance(user) : Number(user.walletBalance || 0),
         holdingBalance: user.role === 'driver' ? getDriverHoldingBalance(user) : 0,
         totalDriverBalance: user.role === 'driver'
@@ -1052,6 +1066,74 @@ exports.adminUpdateUser = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Unable to update user.' });
+  }
+};
+
+exports.deleteUser = async (req, res) => {
+  try {
+    if (!ensureAdminRequest(req, res)) return;
+
+    const targetId = req.params.id;
+    const targetUser = await User.findById(targetId);
+    if (!targetUser || !USER_ROLES.includes(targetUser.role)) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+    if (targetUser.role === 'admin') {
+      return res.status(400).json({ message: 'Admin accounts cannot be deleted.' });
+    }
+
+    if (targetUser.role === 'student') {
+      await Receipt.deleteMany({ student: targetId });
+      await Booking.deleteMany({ student: targetId });
+      await WalletTransaction.deleteMany({ user: targetId });
+    } else if (targetUser.role === 'driver') {
+      const driverTrips = await Trip.find({ driver: targetId }).select('_id');
+      const tripIds = driverTrips.map((trip) => trip._id);
+      if (tripIds.length) {
+        await Receipt.deleteMany({ trip: { $in: tripIds } });
+        await Booking.deleteMany({ trip: { $in: tripIds } });
+      }
+      await Trip.deleteMany({ driver: targetId });
+      await Vehicle.deleteMany({ driver: targetId });
+      await WalletWithdrawal.deleteMany({ driver: targetId });
+    }
+
+    await User.deleteOne({ _id: targetId });
+
+    res.json({ message: 'User and all related data deleted successfully.' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Unable to delete user.' });
+  }
+};
+
+exports.setUserSuspension = async (req, res) => {
+  try {
+    if (!ensureAdminRequest(req, res)) return;
+
+    const targetId = req.params.id;
+    const { suspended, reason } = req.body;
+
+    const targetUser = await User.findById(targetId);
+    if (!targetUser || !USER_ROLES.includes(targetUser.role)) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+    if (targetUser.role === 'admin') {
+      return res.status(400).json({ message: 'Admin accounts cannot be suspended.' });
+    }
+
+    targetUser.suspended = !!suspended;
+    targetUser.suspendedAt = targetUser.suspended ? new Date() : null;
+    targetUser.suspensionReason = targetUser.suspended ? String(reason || '').trim() : '';
+    await targetUser.save();
+
+    res.json({
+      message: targetUser.suspended ? 'User suspended successfully.' : 'User reactivated successfully.',
+      suspended: targetUser.suspended,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Unable to update suspension status.' });
   }
 };
 

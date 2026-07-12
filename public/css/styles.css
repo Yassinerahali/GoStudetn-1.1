@@ -391,6 +391,15 @@ body.dark-mode .switch-wrap .switch-track {
   background: #b93333;
 }
 
+.btn-warning {
+  color: #7a4a00;
+  background: #ffd67a;
+}
+
+.btn-warning:hover {
+  background: #f5c14e;
+}
+
 .notification-btn {
   position: relative;
 }
@@ -3854,4 +3863,30 @@ body.option-pink .admin-status-badge.scheduled {
 .loyalty-gift-empty {
   color: var(--muted);
   font-size: 0.9rem;
+}
+
+.admin-table-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.admin-table-actions .btn {
+  padding: 0.35rem 0.6rem;
+  font-size: 0.82rem;
+}
+
+.status-suspended-badge {
+  margin-top: 0.3rem;
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-pill, 50px);
+  background: #ffe1e1;
+  color: #b93333;
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+tr.status-row-suspended {
+  opacity: 0.75;
 }
