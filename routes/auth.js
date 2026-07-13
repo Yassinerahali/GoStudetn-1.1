@@ -25,6 +25,8 @@ const {
   adminUpdateUser,
   approveExistingUsers,
   resubmitDocuments,
+  deleteUser,
+  setUserSuspension,
 } = require('../controllers/authController');
 
 // Configure multer for file uploads
@@ -66,6 +68,8 @@ router.post('/admin/users/:id/validate-documents', auth, validateUserDocuments);
 router.post('/admin/users/approve-existing', auth, approveExistingUsers);
 router.get('/admin/users/table', auth, getUsersTable);
 router.put('/admin/users/:id', auth, adminUpdateUser);
+router.delete('/admin/users/:id', auth, deleteUser);
+router.patch('/admin/users/:id/suspend', auth, setUserSuspension);
 router.post('/documents/resubmit', auth, upload.fields([
   { name: 'profilePic', maxCount: 1 },
   { name: 'scholarshipCard', maxCount: 1 },
