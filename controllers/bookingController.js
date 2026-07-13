@@ -4,6 +4,7 @@ const User = require('../models/User');
 const Vehicle = require('../models/Vehicle');
 const Receipt = require('../models/Receipt');
 const { cleanupExpiredScheduledTrips, buildTripDepartureDateTime } = require('./tripController');
+const { notify } = require('../utils/notify');
 const LOYALTY_DH_PER_POINT = 50;
 
 const generateReceiptNumber = () => {
@@ -229,6 +230,26 @@ exports.createBooking = async (req, res) => {
     } catch (receiptError) {
       console.error('Receipt generation failed:', receiptError?.message || receiptError);
     }
+
+    const routeLabel = `${updatedTrip.departureCity || 'Depart'} -> ${updatedTrip.destinationCity || 'Arrivee'}`;
+    await Promise.all([
+      notify({
+        userId: updatedTrip.driver,
+        type: 'booking_new',
+        title: 'Nouvelle réservation',
+        message: `${studentProfile?.name || 'Un étudiant'} a réservé ${parsedSeatsBooked} place${parsedSeatsBooked > 1 ? 's' : ''} sur votre trajet ${routeLabel}.`,
+        link: 'driver-dashboard.html',
+        metadata: { bookingId: booking._id, tripId: updatedTrip._id },
+      }),
+      notify({
+        userId: authUserId,
+        type: 'booking_confirmed',
+        title: 'Réservation confirmée',
+        message: `Votre réservation pour ${routeLabel} est confirmée.${isFreeRide ? ' Trajet gratuit Go Fidélité utilisé.' : ''}`,
+        link: receipt?._id ? `receipt.html?bookingId=${booking._id}` : 'student-dashboard.html',
+        metadata: { bookingId: booking._id, tripId: updatedTrip._id },
+      }),
+    ]);
 
     res.status(201).json({
       message: 'Booking confirmed.',

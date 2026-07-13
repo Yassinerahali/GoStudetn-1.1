@@ -11,6 +11,7 @@ const authRoutes = require('./routes/auth');
 const tripRoutes = require('./routes/trips');
 const bookingRoutes = require('./routes/bookings');
 const vehicleRoutes = require('./routes/vehicles');
+const notificationRoutes = require('./routes/notifications');
 const connectDB = require('./config/db');
 
 const app = express();
@@ -30,6 +31,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/trips', tripRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/vehicles', vehicleRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // Fallback to index.html for client-side routing.
 app.get('*', (req, res) => {

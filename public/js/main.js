@@ -139,6 +139,205 @@ const escapeHtml = (value) => String(value ?? '')
   .replaceAll('"', '&quot;')
   .replaceAll("'", '&#39;');
 
+const NOTIF_ICONS = {
+  booking_new: '🚗',
+  booking_confirmed: '✅',
+  document_approved: '📄',
+  document_rejected: '⚠️',
+  account_suspended: '⛔',
+  account_reactivated: '🔓',
+  withdrawal_processed: '💸',
+  admin_withdrawal_request: '💰',
+  admin_new_user: '🆕',
+  admin_documents_resubmitted: '📑',
+  default: '🔔',
+};
+
+const notifRelativeTime = (dateInput) => {
+  const date = new Date(dateInput);
+  const diffMs = Date.now() - date.getTime();
+  const diffMin = Math.round(diffMs / 60000);
+  if (diffMin < 1) return "à l'instant";
+  if (diffMin < 60) return `il y a ${diffMin} min`;
+  const diffH = Math.round(diffMin / 60);
+  if (diffH < 24) return `il y a ${diffH} h`;
+  const diffD = Math.round(diffH / 24);
+  if (diffD < 7) return `il y a ${diffD} j`;
+  return date.toLocaleDateString('fr-FR');
+};
+
+const fetchNotifications = async () => {
+  const response = await fetch(`${apiBase}/notifications`, { headers: authHeaders() });
+  const payload = await parseResponseBody(response);
+  if (!response.ok) {
+    throw new Error(payload.message || 'Unable to load notifications.');
+  }
+  return payload;
+};
+
+const fetchNotificationsUnseenCount = async () => {
+  const response = await fetch(`${apiBase}/notifications/unseen-count`, { headers: authHeaders() });
+  const payload = await parseResponseBody(response);
+  if (!response.ok) return 0;
+  return Number(payload.unseenCount || 0);
+};
+
+const markNotificationSeenRequest = async (id) => {
+  await fetch(`${apiBase}/notifications/${id}/seen`, { method: 'POST', headers: authHeaders() });
+};
+
+const markAllNotificationsSeenRequest = async () => {
+  await fetch(`${apiBase}/notifications/mark-all-seen`, { method: 'POST', headers: authHeaders() });
+};
+
+const deleteNotificationRequest = async (id) => {
+  await fetch(`${apiBase}/notifications/${id}`, { method: 'DELETE', headers: authHeaders() });
+};
+
+const clearAllNotificationsRequest = async () => {
+  await fetch(`${apiBase}/notifications`, { method: 'DELETE', headers: authHeaders() });
+};
+
+const setNotifBellBadge = (count) => {
+  const badge = document.getElementById('notifBellBadge');
+  if (!badge) return;
+  if (count > 0) {
+    badge.textContent = count > 99 ? '99+' : String(count);
+    badge.style.display = 'flex';
+  } else {
+    badge.style.display = 'none';
+  }
+};
+
+const renderNotifList = (notifications) => {
+  const list = document.getElementById('notifList');
+  if (!list) return;
+
+  if (!notifications.length) {
+    list.innerHTML = `
+      <div class="notif-empty-state">
+        <span>🔕</span>
+        <p>Aucune notification pour le moment.</p>
+      </div>
+    `;
+    return;
+  }
+
+  list.innerHTML = notifications
+    .map((item) => `
+      <article class="notif-item${item.seen ? '' : ' is-unread'}" data-notif-id="${item._id}" data-link="${escapeHtml(item.link || '')}">
+        <span class="notif-item-icon">${NOTIF_ICONS[item.type] || NOTIF_ICONS.default}</span>
+        <div class="notif-item-body">
+          <p class="notif-item-title">${escapeHtml(item.title)}</p>
+          <p class="notif-item-message">${escapeHtml(item.message)}</p>
+          <p class="notif-item-time">${notifRelativeTime(item.createdAt)}</p>
+        </div>
+        <button type="button" class="notif-item-delete" data-notif-id="${item._id}" aria-label="Supprimer">×</button>
+      </article>
+    `)
+    .join('');
+};
+
+const initNotificationCenter = () => {
+  const bellButton = document.getElementById('notifBellButton');
+  const panel = document.getElementById('notifPanel');
+  if (!bellButton || !panel || !getToken()) return;
+  if (bellButton.dataset.bound) return;
+  bellButton.dataset.bound = 'true';
+
+  let lastUnseenCount = 0;
+
+  const closePanel = () => panel.classList.remove('is-open');
+
+  const openAndLoad = async () => {
+    panel.classList.add('is-open');
+    try {
+      const payload = await fetchNotifications();
+      renderNotifList(payload.notifications || []);
+      setNotifBellBadge(payload.unseenCount || 0);
+      lastUnseenCount = payload.unseenCount || 0;
+    } catch (error) {
+      const list = document.getElementById('notifList');
+      if (list) list.innerHTML = '<p class="notif-empty">Impossible de charger les notifications.</p>';
+    }
+  };
+
+  bellButton.addEventListener('click', (event) => {
+    event.stopPropagation();
+    if (panel.classList.contains('is-open')) {
+      closePanel();
+    } else {
+      openAndLoad();
+    }
+  });
+
+  panel.addEventListener('click', (event) => event.stopPropagation());
+  document.addEventListener('click', () => closePanel());
+
+  panel.addEventListener('click', async (event) => {
+    const deleteBtn = event.target.closest('.notif-item-delete');
+    if (deleteBtn) {
+      const id = deleteBtn.dataset.notifId;
+      const article = deleteBtn.closest('.notif-item');
+      try {
+        await deleteNotificationRequest(id);
+        article?.remove();
+        const list = document.getElementById('notifList');
+        if (list && !list.querySelector('.notif-item')) {
+          renderNotifList([]);
+        }
+      } catch (error) {
+        // Silently ignore.
+      }
+      return;
+    }
+
+    const item = event.target.closest('.notif-item');
+    if (item) {
+      const id = item.dataset.notifId;
+      const link = item.dataset.link;
+      if (item.classList.contains('is-unread')) {
+        item.classList.remove('is-unread');
+        markNotificationSeenRequest(id);
+        setNotifBellBadge(Math.max(0, Number(document.getElementById('notifBellBadge')?.textContent || '0') - 1));
+      }
+      if (link) {
+        window.location.href = link;
+      }
+    }
+  });
+
+  document.getElementById('notifMarkAllRead')?.addEventListener('click', async (event) => {
+    event.stopPropagation();
+    await markAllNotificationsSeenRequest();
+    document.querySelectorAll('.notif-item.is-unread').forEach((el) => el.classList.remove('is-unread'));
+    setNotifBellBadge(0);
+  });
+
+  document.getElementById('notifClearAll')?.addEventListener('click', async (event) => {
+    event.stopPropagation();
+    await clearAllNotificationsRequest();
+    renderNotifList([]);
+    setNotifBellBadge(0);
+  });
+
+  const poll = async () => {
+    const count = await fetchNotificationsUnseenCount();
+    setNotifBellBadge(count);
+    if (count > lastUnseenCount) {
+      bellButton.classList.remove('is-shaking');
+      // eslint-disable-next-line no-unused-expressions
+      bellButton.offsetWidth; // force reflow so the animation can restart
+      bellButton.classList.add('is-shaking');
+    }
+    lastUnseenCount = count;
+  };
+
+  poll();
+  if (window.__notifPoller) clearInterval(window.__notifPoller);
+  window.__notifPoller = setInterval(poll, 20000);
+};
+
 const updateWalletDisplay = (balance) => {
   const walletBalanceElement = document.getElementById('walletBalance');
   if (walletBalanceElement) {
@@ -1870,45 +2069,6 @@ const fetchStudentReceipts = async () => {
   return Array.isArray(payload) ? payload : [];
 };
 
-const renderDriverNotifications = (payload) => {
-  const badge = document.getElementById('driverNotificationsBadge');
-  const panel = document.getElementById('driverNotificationsPanel');
-  if (badge) badge.textContent = String(payload?.unseenCount || 0);
-  if (!panel) return;
-
-  const notifications = payload?.notifications || [];
-  if (!notifications.length) {
-    panel.innerHTML = '<p class="small-text">No new reservations.</p>';
-    return;
-  }
-
-  panel.innerHTML = notifications
-    .map((item) => `
-      <article class="notification-item">
-        <strong>${escapeHtml(item.studentName)}</strong>
-        <p>${escapeHtml(item.route)}</p>
-        <p>Seats: ${item.seatsBooked}</p>
-        <p>Request: ${escapeHtml(item.studentComment || 'No request.')}</p>
-        <div class="notification-actions">
-          <button type="button" class="btn btn-secondary notification-delete" data-booking-id="${item.bookingId}">Delete</button>
-        </div>
-      </article>
-    `)
-    .join('');
-};
-
-const deleteDriverNotification = async (bookingId) => {
-  const response = await fetch(`${apiBase}/bookings/driver/notifications/${bookingId}`, {
-    method: 'DELETE',
-    headers: authHeaders(),
-  });
-  const payload = await parseResponseBody(response);
-  if (!response.ok) {
-    throw new Error(payload.message || 'Unable to delete notification.');
-  }
-  return payload;
-};
-
 const openDriverTripPopup = async (tripId, mode = 'start') => {
   try {
     let tripPayload = null;
@@ -2105,39 +2265,6 @@ const loadDriverDashboard = async () => {
     window.location.href = 'index.html';
   });
 
-  const notificationsToggle = document.getElementById('driverNotificationsToggle');
-  const notificationsPanel = document.getElementById('driverNotificationsPanel');
-  if (notificationsToggle && notificationsPanel && !notificationsToggle.dataset.bound) {
-    notificationsToggle.dataset.bound = 'true';
-    notificationsToggle.addEventListener('click', async () => {
-      notificationsPanel.classList.toggle('is-open');
-      if (notificationsPanel.classList.contains('is-open')) {
-        await fetch(`${apiBase}/bookings/driver/notifications/seen`, {
-          method: 'PATCH',
-          headers: authHeaders(),
-        });
-        await loadDriverBookings();
-      }
-    });
-
-    notificationsPanel.addEventListener('click', async (event) => {
-      const target = event.target.closest('.notification-delete');
-      if (!target) return;
-      const bookingId = target.getAttribute('data-booking-id');
-      if (!bookingId) return;
-
-      target.disabled = true;
-      try {
-        await deleteDriverNotification(bookingId);
-        await loadDriverBookings();
-      } catch (error) {
-        showMessage('driverMessage', error.message || 'Unable to delete notification.');
-      } finally {
-        target.disabled = false;
-      }
-    });
-  }
-
   const walletData = await fetchWalletBalance();
   if (walletData !== null) {
     updateDriverWalletDisplay(walletData.driverAvailableBalance, walletData.driverHoldingBalance);
@@ -2332,7 +2459,6 @@ const loadDriverBookings = async () => {
     if (!list) return;
 
     list.innerHTML = '';
-    renderDriverNotifications(payload);
 
     if (!bookings.length) {
       list.innerHTML = '<p>No bookings yet for your trips.</p>';
@@ -3361,6 +3487,7 @@ const attachPageHandlers = () => {
 
   initializePinkModeToggle();
   initializeDarkModeToggle();
+  initNotificationCenter();
 
   switch (path) {
     case 'index.html':

@@ -8,6 +8,7 @@ const Booking = require('../models/Booking');
 const Trip = require('../models/Trip');
 const Receipt = require('../models/Receipt');
 const Vehicle = require('../models/Vehicle');
+const { notify } = require('../utils/notify');
 
 const ADMIN_EMAIL = 'admin@gostudent.ma';
 const ADMIN_PASSWORD = 'ABC123';
@@ -197,6 +198,16 @@ exports.register = async (req, res) => {
 
     const user = new User(userData);
     await user.save();
+
+    const adminForNotification = await ensureAdminAccount();
+    await notify({
+      userId: adminForNotification._id,
+      type: 'admin_new_user',
+      title: 'Nouvelle inscription',
+      message: `${user.name} (${role}) vient de s'inscrire et attend la validation des documents.`,
+      link: 'admin-documents.html',
+      metadata: { userId: user._id },
+    });
 
     const token = generateToken(user._id);
     res.status(201).json({
@@ -482,6 +493,24 @@ exports.withdrawWallet = async (req, res) => {
       amountSentToDriver,
       status: 'completed',
     });
+
+    const adminForNotification = await ensureAdminAccount();
+    await Promise.all([
+      notify({
+        userId: authUserId,
+        type: 'withdrawal_processed',
+        title: 'Retrait traité',
+        message: `Votre retrait de ${parsedAmount} MAD via ${normalizedMethod} a été traité. Montant reçu : ${amountSentToDriver} MAD.`,
+        link: 'wallet.html',
+      }),
+      notify({
+        userId: adminForNotification._id,
+        type: 'admin_withdrawal_request',
+        title: 'Retrait conducteur',
+        message: `Un conducteur a retiré ${parsedAmount} MAD (frais : ${feeAmount} MAD).`,
+        link: 'admin-wallet.html',
+      }),
+    ]);
 
     res.json({
       message: `Withdrawal completed via ${normalizedMethod}. Fee: ${feeAmount} MAD.`,
@@ -957,6 +986,16 @@ exports.validateUserDocuments = async (req, res) => {
     targetUser.documentsReviewedAt = new Date();
     await targetUser.save();
 
+    await notify({
+      userId: targetUser._id,
+      type: isApproved ? 'document_approved' : 'document_rejected',
+      title: isApproved ? 'Documents validés' : 'Documents rejetés',
+      message: isApproved
+        ? 'Vos documents ont été validés. Votre compte est maintenant actif.'
+        : `Vos documents ont été rejetés. Raison : ${normalizedReason}`,
+      link: 'profile.html',
+    });
+
     res.json({
       message: isApproved ? 'Documents approved successfully.' : 'Documents rejected.',
       user: mapUserForClient(targetUser),
@@ -1127,6 +1166,16 @@ exports.setUserSuspension = async (req, res) => {
     targetUser.suspensionReason = targetUser.suspended ? String(reason || '').trim() : '';
     await targetUser.save();
 
+    await notify({
+      userId: targetUser._id,
+      type: targetUser.suspended ? 'account_suspended' : 'account_reactivated',
+      title: targetUser.suspended ? 'Compte suspendu' : 'Compte réactivé',
+      message: targetUser.suspended
+        ? `Votre compte a été suspendu.${targetUser.suspensionReason ? ` Raison : ${targetUser.suspensionReason}` : ''}`
+        : 'Votre compte a été réactivé. Vous pouvez de nouveau vous connecter.',
+      link: 'profile.html',
+    });
+
     res.json({
       message: targetUser.suspended ? 'User suspended successfully.' : 'User reactivated successfully.',
       suspended: targetUser.suspended,
@@ -1212,6 +1261,16 @@ exports.resubmitDocuments = async (req, res) => {
     if (!updatedUser) {
       return res.status(404).json({ message: 'User not found.' });
     }
+
+    const adminForNotification = await ensureAdminAccount();
+    await notify({
+      userId: adminForNotification._id,
+      type: 'admin_documents_resubmitted',
+      title: 'Documents resoumis',
+      message: `${updatedUser.name} a soumis de nouveaux documents en attente de validation.`,
+      link: 'admin-documents.html',
+      metadata: { userId: updatedUser._id },
+    });
 
     res.json({
       message: 'Documents re-uploaded successfully. Waiting for admin approval.',
