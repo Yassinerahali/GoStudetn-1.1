@@ -175,6 +175,7 @@ button {
 .header-actions {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.7rem;
 }
 
@@ -459,6 +460,68 @@ body.dark-mode .switch-wrap .switch-track {
 .message {
   margin-top: 0.7rem;
   color: var(--error);
+}
+
+.message.is-error {
+  color: #c53030;
+}
+
+.message.is-success {
+  color: #247a1f;
+}
+
+.toast-stack {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: min(360px, calc(100vw - 40px));
+  pointer-events: none;
+}
+
+.toast-item {
+  pointer-events: auto;
+  cursor: pointer;
+  padding: 0.8rem 1.1rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.86rem;
+  line-height: 1.4;
+  color: #fff;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.28);
+  opacity: 0;
+  transform: translateX(28px) scale(0.96);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.toast-item.is-visible {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+}
+
+.toast-item.is-fading {
+  opacity: 0;
+  transform: translateX(28px) scale(0.96);
+}
+
+.toast-item.is-error {
+  background: #c53030;
+}
+
+.toast-item.is-success {
+  background: #1f7a3d;
+}
+
+@media (max-width: 480px) {
+  .toast-stack {
+    right: 12px;
+    bottom: 12px;
+    left: 12px;
+    max-width: none;
+  }
 }
 
 .row {
@@ -997,6 +1060,7 @@ body.dark-mode .switch-wrap .switch-track {
 
 .card-grid {
   display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 0.8rem;
 }
 
@@ -1687,6 +1751,16 @@ body.dark-mode.profile-page .profile-info-row > span {
 .admin-table-wrap {
   margin-top: 0.8rem;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 10px;
+  background:
+    linear-gradient(to right, var(--surface) 0%, rgba(255, 255, 255, 0) 100%) left,
+    linear-gradient(to left, var(--surface) 0%, rgba(255, 255, 255, 0) 100%) right,
+    linear-gradient(to right, rgba(15, 23, 42, 0.12), rgba(255, 255, 255, 0) 100%) left,
+    linear-gradient(to left, rgba(15, 23, 42, 0.12), rgba(255, 255, 255, 0) 100%) right;
+  background-repeat: no-repeat;
+  background-size: 24px 100%, 24px 100%, 8px 100%, 8px 100%;
+  background-attachment: local, local, scroll, scroll;
 }
 
 .admin-table {
@@ -4140,5 +4214,45 @@ body.dark-mode .notif-item.is-unread {
   .notif-panel {
     width: min(90vw, 340px);
     right: -10px;
+  }
+}
+
+/* ===== General mobile touch-target and spacing pass ===== */
+@media (max-width: 650px) {
+  .btn {
+    padding: 0.8rem 1.1rem;
+    min-height: 44px;
+  }
+
+  .nav-item {
+    min-height: 44px;
+    padding: 12px 14px;
+  }
+
+  .admin-table-actions .btn {
+    padding: 0.5rem 0.75rem;
+    min-height: 38px;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+  }
+
+  .main-header h2,
+  .dashboard-header h1 {
+    font-size: 1.2rem;
+    line-height: 1.3;
+  }
+
+  .card,
+  .wallet-history-card,
+  .loyalty-card {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .side-nav {
+    grid-template-columns: 1fr;
   }
 }

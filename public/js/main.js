@@ -52,11 +52,40 @@ const authHeaders = () => ({
   Authorization: `Bearer ${getToken()}`,
 });
 
+const getToastStack = () => {
+  let stack = document.getElementById('globalToastStack');
+  if (!stack) {
+    stack = document.createElement('div');
+    stack.id = 'globalToastStack';
+    stack.className = 'toast-stack';
+    document.body.appendChild(stack);
+  }
+  return stack;
+};
+
 const showMessage = (elementId, message, isError = true) => {
-  const element = document.getElementById(elementId);
-  if (!element) return;
-  element.textContent = message;
-  element.style.color = isError ? '#c53030' : '#247a1f';
+  if (!message) return;
+
+  const stack = getToastStack();
+  const toast = document.createElement('div');
+  toast.className = `toast-item ${isError ? 'is-error' : 'is-success'}`;
+  toast.textContent = message;
+  stack.appendChild(toast);
+
+  requestAnimationFrame(() => {
+    toast.classList.add('is-visible');
+  });
+
+  let hideTimeout = null;
+  const remove = () => {
+    if (hideTimeout) clearTimeout(hideTimeout);
+    toast.classList.remove('is-visible');
+    toast.classList.add('is-fading');
+    setTimeout(() => toast.remove(), 300);
+  };
+
+  toast.addEventListener('click', remove);
+  hideTimeout = setTimeout(remove, 4500);
 };
 
 const parseResponseBody = async (response) => {
