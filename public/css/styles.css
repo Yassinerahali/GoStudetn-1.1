@@ -1748,6 +1748,57 @@ body.dark-mode.profile-page .profile-info-row > span {
   }
 }
 
+.admin-filters-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.9rem;
+}
+
+.admin-filter-search {
+  flex: 1 1 240px;
+  min-width: 200px;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 0.88rem;
+}
+
+.admin-filter-select {
+  padding: 0.55rem 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 0.86rem;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.admin-filter-count {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+@media (max-width: 650px) {
+  .admin-filters-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .admin-filter-search,
+  .admin-filter-select {
+    width: 100%;
+  }
+
+  .admin-filter-count {
+    margin-left: 0;
+    text-align: right;
+  }
+}
+
 .admin-table-wrap {
   margin-top: 0.8rem;
   overflow-x: auto;

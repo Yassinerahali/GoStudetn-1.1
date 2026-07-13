@@ -3174,6 +3174,104 @@ const downloadAdminUsersCsv = (rows) => {
   URL.revokeObjectURL(url);
 };
 
+let adminUsersFilteredView = [];
+
+const getFilteredAdminUsers = () => {
+  const searchInput = document.getElementById('usersSearchInput');
+  const roleSelect = document.getElementById('usersRoleFilter');
+  const statusSelect = document.getElementById('usersStatusFilter');
+  const sortSelect = document.getElementById('usersSortSelect');
+
+  const query = (searchInput?.value || '').trim().toLowerCase();
+  const roleFilter = roleSelect?.value || 'all';
+  const statusFilter = statusSelect?.value || 'all';
+  const sortValue = sortSelect?.value || 'name-asc';
+
+  let rows = [...adminUsersTableCache];
+
+  if (query) {
+    rows = rows.filter((row) => {
+      const haystack = [row.firstName, row.lastName, row.email, row.phoneNumber, row.idCardNumber]
+        .join(' ')
+        .toLowerCase();
+      return haystack.includes(query);
+    });
+  }
+
+  if (roleFilter !== 'all') {
+    rows = rows.filter((row) => row.role === roleFilter);
+  }
+
+  if (statusFilter !== 'all') {
+    if (statusFilter === 'suspended') {
+      rows = rows.filter((row) => row.suspended);
+    } else {
+      rows = rows.filter(
+        (row) => !row.suspended && normalizeStatus(row.documentsValidationStatus, row.accountApproved) === statusFilter
+      );
+    }
+  }
+
+  const collator = new Intl.Collator('fr', { sensitivity: 'base' });
+  rows.sort((a, b) => {
+    switch (sortValue) {
+      case 'name-desc':
+        return collator.compare(`${b.firstName} ${b.lastName}`, `${a.firstName} ${a.lastName}`);
+      case 'balance-desc':
+        return Number(b.balance || 0) - Number(a.balance || 0);
+      case 'balance-asc':
+        return Number(a.balance || 0) - Number(b.balance || 0);
+      case 'role':
+        return collator.compare(a.role || '', b.role || '');
+      case 'name-asc':
+      default:
+        return collator.compare(`${a.firstName} ${a.lastName}`, `${b.firstName} ${b.lastName}`);
+    }
+  });
+
+  return rows;
+};
+
+const applyAdminUsersFilters = () => {
+  adminUsersFilteredView = getFilteredAdminUsers();
+  renderAdminUsersTable(adminUsersFilteredView);
+
+  const countLabel = document.getElementById('usersResultsCount');
+  if (countLabel) {
+    const total = adminUsersTableCache.length;
+    const shown = adminUsersFilteredView.length;
+    countLabel.textContent = shown === total
+      ? `${total} utilisateur${total > 1 ? 's' : ''}`
+      : `${shown} / ${total} utilisateurs`;
+  }
+};
+
+const bindAdminUsersFilters = () => {
+  const searchInput = document.getElementById('usersSearchInput');
+  const roleSelect = document.getElementById('usersRoleFilter');
+  const statusSelect = document.getElementById('usersStatusFilter');
+  const sortSelect = document.getElementById('usersSortSelect');
+  const resetButton = document.getElementById('usersFiltersReset');
+  if (!searchInput || searchInput.dataset.bound) return;
+  searchInput.dataset.bound = 'true';
+
+  let searchDebounce = null;
+  searchInput.addEventListener('input', () => {
+    clearTimeout(searchDebounce);
+    searchDebounce = setTimeout(applyAdminUsersFilters, 200);
+  });
+  roleSelect?.addEventListener('change', applyAdminUsersFilters);
+  statusSelect?.addEventListener('change', applyAdminUsersFilters);
+  sortSelect?.addEventListener('change', applyAdminUsersFilters);
+  resetButton?.addEventListener('click', () => {
+    searchInput.value = '';
+    if (roleSelect) roleSelect.value = 'all';
+    if (statusSelect) statusSelect.value = 'all';
+    if (sortSelect) sortSelect.value = 'name-asc';
+    applyAdminUsersFilters();
+  });
+};
+
 const renderAdminUsersTable = (rows) => {
   const tbody = document.getElementById('adminUsersTableBody');
   if (!tbody) return;
@@ -3486,11 +3584,12 @@ const loadAdminUsersPage = async () => {
   bindAdminLogoutActions();
   bindAdminActions();
   bindApproveExistingUsersAction(loadAdminUsersPage);
+  bindAdminUsersFilters();
 
   const downloadButton = document.getElementById('downloadUsersCsvButton');
   if (downloadButton && !downloadButton.dataset.bound) {
     downloadButton.dataset.bound = 'true';
-    downloadButton.addEventListener('click', () => downloadAdminUsersCsv(adminUsersTableCache));
+    downloadButton.addEventListener('click', () => downloadAdminUsersCsv(adminUsersFilteredView));
   }
 
   try {
@@ -3500,7 +3599,7 @@ const loadAdminUsersPage = async () => {
     ]);
     applyAdminSummaryToPage(summary);
     adminUsersTableCache = usersTable;
-    renderAdminUsersTable(usersTable);
+    applyAdminUsersFilters();
   } catch (error) {
     showMessage('adminInfo', error.message || 'Unable to load users table.');
   }
